@@ -48,9 +48,9 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(AppSizes.p32),
                     decoration: BoxDecoration(
-                      color: AppColors.surface.withValues(alpha: 0.6),
+                      color: AppColors.surface.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(AppSizes.r24),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -94,7 +94,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                             hintText: '+251 9... or +251 7...',
                             hintStyle: const TextStyle(color: Colors.white24),
                             filled: true,
-                            fillColor: Colors.black.withValues(alpha: 0.2),
+                            fillColor: Colors.black.withOpacity(0.2),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(AppSizes.r12),
                               borderSide: BorderSide.none,
@@ -175,9 +175,9 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.surface.withValues(alpha: 0.5),
+              color: AppColors.surface.withOpacity(0.5),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
             ),
             child: Icon(
               label == 'Manager' ? Icons.admin_panel_settings : label == 'Staff' ? Icons.engineering : Icons.person,

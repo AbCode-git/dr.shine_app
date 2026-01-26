@@ -98,7 +98,7 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
         labelText: 'Category',
         prefixIcon: const Icon(Icons.category, color: AppColors.primary),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.05),
+        fillColor: Colors.white.withOpacity(0.05),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSizes.r12)),
       ),
       items: InventoryCategory.values.map((cat) {
@@ -116,7 +116,7 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primary),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.05),
+        fillColor: Colors.white.withOpacity(0.05),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSizes.r12)),
       ),
       validator: (val) => val == null || val.isEmpty ? 'Required' : null,

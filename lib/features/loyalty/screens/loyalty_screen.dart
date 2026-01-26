@@ -26,14 +26,14 @@ class LoyaltyScreen extends StatelessWidget {
               padding: const EdgeInsets.all(AppSizes.p24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(AppSizes.r16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withOpacity(0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -123,7 +123,7 @@ class LoyaltyScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSizes.p16),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.1),
+                  color: AppColors.success.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppSizes.r12),
                   border: Border.all(color: AppColors.success),
                 ),

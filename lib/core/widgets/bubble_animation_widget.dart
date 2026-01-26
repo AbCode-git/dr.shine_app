@@ -108,14 +108,14 @@ class BubblePainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     for (var bubble in bubbles) {
-      paint.color = Colors.white.withValues(alpha: bubble.opacity);
+      paint.color = Colors.white.withOpacity(bubble.opacity);
       
       // Draw outer circle
       canvas.drawCircle(Offset(bubble.x % size.width, bubble.y), bubble.radius, paint);
       
       // Draw inner shine (reflex)
       final shinePaint = Paint()
-        ..color = Colors.white.withValues(alpha: bubble.opacity * 0.5)
+        ..color = Colors.white.withOpacity(bubble.opacity * 0.5)
         ..style = PaintingStyle.fill;
       
       canvas.drawCircle(

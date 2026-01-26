@@ -37,7 +37,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
                 return Card(
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                      backgroundColor: AppColors.primary.withOpacity(0.1),
                       child: const Icon(Icons.person, color: AppColors.primary),
                     ),
                     title: Text(staff.displayName ?? 'Staff member'),

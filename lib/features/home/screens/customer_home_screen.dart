@@ -95,7 +95,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 0,
-      backgroundColor: AppColors.background.withValues(alpha: 0.8),
+      backgroundColor: AppColors.background.withOpacity(0.8),
       elevation: 0,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
@@ -121,7 +121,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
+                border: Border.all(color: AppColors.primary.withOpacity(0.5), width: 1.5),
               ),
               child: const CircleAvatar(
                 radius: 18,
@@ -188,12 +188,12 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         decoration: BoxDecoration(
-          color: AppColors.surface.withValues(alpha: 0.6),
+          color: AppColors.surface.withOpacity(0.6),
           borderRadius: BorderRadius.circular(AppSizes.r24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
           boxShadow: [
             BoxShadow(
-              color: statusColor.withValues(alpha: 0.1),
+              color: statusColor.withOpacity(0.1),
               blurRadius: 30,
               spreadRadius: 2,
             ),
@@ -204,7 +204,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.1),
+                color: statusColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(statusIcon, color: statusColor, size: 28),
@@ -323,9 +323,9 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.surface.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(AppSizes.r24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+              color: AppColors.surface.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,7 +334,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
+                    color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 28),
@@ -398,7 +398,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.secondary, AppColors.primary.withValues(alpha: 0.5)],
+                          colors: [AppColors.secondary, AppColors.primary.withOpacity(0.5)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -411,7 +411,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.black.withValues(alpha: 0.6), Colors.transparent],
+                          colors: [Colors.black.withOpacity(0.6), Colors.transparent],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                           stops: const [0, 0.6],
@@ -482,9 +482,9 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppColors.surface.withValues(alpha: 0.6),
+                color: AppColors.surface.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(AppSizes.r24),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
               ),
               child: Column(
                 children: [
@@ -503,7 +503,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                                 color: isActive ? AppColors.primary : Colors.white10,
                                 shape: BoxShape.circle,
                                 boxShadow: isCurrent
-                                    ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.4), blurRadius: 10)]
+                                    ? [BoxShadow(color: AppColors.primary.withOpacity(0.4), blurRadius: 10)]
                                     : null,
                               ),
                               child: Icon(
@@ -564,7 +564,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
               borderRadius: BorderRadius.circular(AppSizes.r24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),

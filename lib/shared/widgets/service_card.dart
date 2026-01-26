@@ -24,7 +24,7 @@ class ServiceCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Card(
-            color: isSelected ? AppColors.primary.withValues(alpha: 0.2) : AppColors.surface,
+            color: isSelected ? AppColors.primary.withOpacity(0.2) : AppColors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSizes.r12),
               side: BorderSide(
