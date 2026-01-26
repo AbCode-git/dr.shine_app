@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "963751621343",
+    "project_id": "dr-shine-car-wash-899f9",
+    "storage_bucket": "dr-shine-car-wash-899f9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963751621343:android:fb8b78083cbcd87a6faf6a",
+        "android_client_info": {
+          "package_name": "com.drshine.carwash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDVtiIbbaWISRp8VuNY2sTkfzH9QD6mqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

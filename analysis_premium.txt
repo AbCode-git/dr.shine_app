@@ -1,0 +1,11 @@
+Analyzing 2 items...                                            
+
+warning - Unused import: 'package:dr_shine_app/core/constants/app_colors.dart' - lib\core\widgets\bubble_animation_widget.dart:3:8 - unused_import
+warning - Unused import: 'package:dr_shine_app/shared/widgets/service_card.dart' - lib\features\home\screens\customer_home_screen.dart:12:8 - unused_import
+warning - Unused import: 'package:dr_shine_app/features/booking/screens/create_booking_screen.dart' - lib\features\home\screens\customer_home_screen.dart:13:8 - unused_import
+warning - The value of the local variable 'service' isn't used - lib\features\home\screens\customer_home_screen.dart:352:17 - unused_local_variable
+  error - Expected an identifier - lib\features\home\screens\customer_home_screen.dart:364:13 - missing_identifier
+  error - Expected to find ')' - lib\features\home\screens\customer_home_screen.dart:364:13 - expected_token
+  error - Expected to find ')' - lib\features\home\screens\customer_home_screen.dart:374:12 - expected_token
+
+7 issues found. (ran in 2.6s)

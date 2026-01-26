@@ -1,0 +1,34 @@
+Analyzing dr_shine_restructured...                              
+
+   info - Use 'const' with the constructor to improve performance - lib\app\app_theme.dart:12:20 - prefer_const_constructors
+warning - Unused import: 'package:flutter/foundation.dart' - lib\core\utils\mock_data.dart:1:8 - unused_import
+warning - Unused import: 'package:dr_shine_app/shared/models/service_model.dart' - lib\core\utils\mock_data.dart:4:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\primary_button.dart:27:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\primary_button.dart:36:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\shimmer_loading.dart:61:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\shimmer_loading.dart:62:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\shimmer_loading.dart:63:30 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\auth\screens\otp_verification_screen.dart:58:57 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\auth\screens\otp_verification_screen.dart:61:42 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\auth\screens\phone_input_screen.dart:62:23 - use_build_context_synchronously
+warning - Unused import: 'package:dr_shine_app/core/utils/mock_data.dart' - lib\features\booking\providers\booking_provider.dart:5:8 - unused_import
+   info - The private field _bookings could be 'final' - lib\features\booking\providers\booking_provider.dart:10:22 - prefer_final_fields
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\booking\screens\create_booking_screen.dart:87:46 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\booking\screens\create_booking_screen.dart:90:39 - use_build_context_synchronously
+warning - The value of the local variable 'progress' isn't used - lib\features\loyalty\screens\loyalty_screen.dart:17:11 - unused_local_variable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\loyalty\screens\loyalty_screen.dart:30:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\loyalty\screens\loyalty_screen.dart:37:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\loyalty\screens\loyalty_screen.dart:120:44 - deprecated_member_use
+   info - The private field _isLoading could be 'final' - lib\features\status\providers\status_provider.dart:11:8 - prefer_final_fields
+warning - Unused import: 'package:flutter/services.dart' - lib\features\vehicle\screens\add_vehicle_screen.dart:2:8 - unused_import
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\vehicle\screens\add_vehicle_screen.dart:52:17 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\vehicle\screens\add_vehicle_screen.dart:96:48 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\booking_card.dart:81:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\service_card.dart:27:51 - deprecated_member_use
+warning - Unused import: 'package:dr_shine_app/shared/models/service_model.dart' - lib\shared\widgets\vehicle_card.dart:5:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\vehicle_card.dart:24:47 - deprecated_member_use
+   info - The imported package 'dr_shine_restructured' isn't a dependency of the importing package - test\widget_test.dart:11:8 - depend_on_referenced_packages
+  error - Target of URI doesn't exist: 'package:dr_shine_restructured/main.dart' - test\widget_test.dart:11:8 - uri_does_not_exist
+  error - The name 'MyApp' isn't a class - test\widget_test.dart:16:35 - creation_with_non_type
+
+30 issues found. (ran in 7.1s)

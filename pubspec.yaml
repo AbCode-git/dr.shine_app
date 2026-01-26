@@ -1,0 +1,43 @@
+name: dr_shine_app
+description: "A new Flutter project for Dr. Shine Car Wash."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase Core
+  firebase_core: ^2.25.0
+  firebase_auth: ^4.17.0
+  cloud_firestore: ^4.15.0
+  firebase_messaging: ^14.7.10
+
+  # State Management
+  provider: ^6.1.1
+
+  # Maps & Location
+  google_maps_flutter: ^2.5.3
+  geolocator: ^10.1.0
+
+  # Utilities
+  intl: ^0.19.0
+
+  # UI
+  cupertino_icons: ^1.0.6
+
+  # UUID
+  uuid: ^4.2.1
+  shared_preferences: ^2.5.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

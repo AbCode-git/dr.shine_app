@@ -1,0 +1,5 @@
+[error] The method 'getVehicleById' isn't defined for the type 'VehicleProvider' (c:\users\barot\.gemini\antigravity\scratch\dr_shine_restructured\lib\features\admin\screens\admin_dashboard_screen.dart:62:63)
+[error] The getter 'make' isn't defined for the type 'VehicleModel' (c:\users\barot\.gemini\antigravity\scratch\dr_shine_restructured\lib\features\admin\screens\admin_dashboard_screen.dart:66:42)
+[error] The getter 'model' isn't defined for the type 'VehicleModel' (c:\users\barot\.gemini\antigravity\scratch\dr_shine_restructured\lib\features\admin\screens\admin_dashboard_screen.dart:66:58)
+[error] The getter 'licensePlate' isn't defined for the type 'VehicleModel' (c:\users\barot\.gemini\antigravity\scratch\dr_shine_restructured\lib\features\admin\screens\admin_dashboard_screen.dart:66:76)
+[warning] Unused import: 'package:dr_shine_app/features/auth/providers/auth_provider.dart' (c:\users\barot\.gemini\antigravity\scratch\dr_shine_restructured\lib\features\admin\screens\admin_dashboard_screen.dart:3:8)

@@ -1,0 +1,6 @@
+Analyzing 3 items...                                            
+
+   info - Use 'const' with the constructor to improve performance - lib\features\home\screens\customer_home_screen.dart:390:28 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\home\screens\customer_home_screen.dart:391:31 - prefer_const_constructors
+
+2 issues found. (ran in 4.5s)

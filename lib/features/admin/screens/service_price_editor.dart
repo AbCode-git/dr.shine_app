@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:dr_shine_app/shared/models/service_model.dart';
+import 'package:dr_shine_app/core/constants/app_colors.dart';
+import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:dr_shine_app/core/widgets/primary_button.dart';
+
+class ServicePriceEditor extends StatefulWidget {
+  const ServicePriceEditor({super.key});
+
+  @override
+  State<ServicePriceEditor> createState() => _ServicePriceEditorState();
+}
+
+class _ServicePriceEditorState extends State<ServicePriceEditor> {
+  late List<ServiceModel> _services;
+
+  @override
+  void initState() {
+    super.initState();
+    _services = List.from(defaultServices);
+  }
+
+  void _editService(int index) {
+    final service = _services[index];
+    final nameController = TextEditingController(text: service.name);
+    final priceController = TextEditingController(text: service.price.toInt().toString());
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit ${service.name}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Service Name'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: priceController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Price (ETB)'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _services[index] = ServiceModel(
+                  id: service.id,
+                  name: nameController.text,
+                  description: service.description,
+                  price: double.tryParse(priceController.text) ?? service.price,
+                );
+                // Update the global list for the session (mock)
+                defaultServices[index] = _services[index];
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Service Pricing')),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(AppSizes.p16),
+        itemCount: _services.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final service = _services[index];
+          return Card(
+            child: ListTile(
+              title: Text(service.name),
+              subtitle: Text('${service.price.toInt()} ETB'),
+              trailing: IconButton(
+                icon: const Icon(Icons.edit, color: AppColors.primary),
+                onPressed: () => _editService(index),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

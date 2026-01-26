@@ -1,0 +1,10 @@
+Analyzing 2 items...                                            
+
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\auth\screens\phone_input_screen.dart:121:35 - use_build_context_synchronously
+  error - The name 'BookingModel' isn't a type, so it can't be used as a type argument - lib\features\home\screens\customer_home_screen.dart:348:31 - non_type_as_type_argument
+  error - The name 'BookingModel' isn't a type, so it can't be used as a type argument - lib\features\home\screens\customer_home_screen.dart:352:45 - non_type_as_type_argument
+  error - The getter 'status' isn't defined for the type 'Object' - lib\features\home\screens\customer_home_screen.dart:353:25 - undefined_getter
+  error - The getter 'status' isn't defined for the type 'Object' - lib\features\home\screens\customer_home_screen.dart:353:53 - undefined_getter
+  error - The getter 'userId' isn't defined for the type 'Object' - lib\features\home\screens\customer_home_screen.dart:353:81 - undefined_getter
+
+6 issues found. (ran in 2.8s)
