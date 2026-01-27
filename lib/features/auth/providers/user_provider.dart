@@ -55,24 +55,45 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUserRole(String userId, String newRole) async {
+  Future<void> createUser(UserModel user) async {
+    if (!isFirebaseInitialized) {
+      _allUsers.insert(0, user);
+      notifyListeners();
+      return;
+    }
+    await _firestore.collection('users').doc(user.id).set(user.toMap());
+    await fetchUsers();
+  }
+
+  Future<void> updateUserDetails(String userId, {String? displayName, String? phoneNumber, String? role, int? loyaltyPoints}) async {
     if (!isFirebaseInitialized) {
       final index = _allUsers.indexWhere((u) => u.id == userId);
       if (index != -1) {
         final user = _allUsers[index];
         _allUsers[index] = UserModel(
           id: user.id,
-          phoneNumber: user.phoneNumber,
-          displayName: user.displayName,
-          role: newRole,
-          loyaltyPoints: user.loyaltyPoints,
+          phoneNumber: phoneNumber ?? user.phoneNumber,
+          displayName: displayName ?? user.displayName,
+          role: role ?? user.role,
+          loyaltyPoints: loyaltyPoints ?? user.loyaltyPoints,
           createdAt: user.createdAt,
         );
         notifyListeners();
       }
       return;
     }
-    await _firestore.collection('users').doc(userId).update({'role': newRole});
+    
+    final updates = <String, dynamic>{};
+    if (displayName != null) updates['displayName'] = displayName;
+    if (phoneNumber != null) updates['phoneNumber'] = phoneNumber;
+    if (role != null) updates['role'] = role;
+    if (loyaltyPoints != null) updates['loyaltyPoints'] = loyaltyPoints;
+
+    await _firestore.collection('users').doc(userId).update(updates);
     await fetchUsers();
+  }
+
+  Future<void> updateUserRole(String userId, String newRole) async {
+    await updateUserDetails(userId, role: newRole);
   }
 }

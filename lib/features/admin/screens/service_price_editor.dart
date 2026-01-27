@@ -70,10 +70,66 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
     );
   }
 
+  void _addService() {
+    final nameController = TextEditingController();
+    final priceController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add New Service'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Service Name'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: priceController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Price (ETB)'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.isEmpty || priceController.text.isEmpty) return;
+              
+              setState(() {
+                final newService = ServiceModel(
+                  id: 'service_${DateTime.now().millisecondsSinceEpoch}',
+                  name: nameController.text,
+                  description: 'Custom service added by management',
+                  price: double.tryParse(priceController.text) ?? 0,
+                );
+                _services.add(newService);
+                defaultServices.add(newService);
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Add Service'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Service Pricing')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addService,
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add_business),
+      ),
       body: ListView.separated(
         padding: const EdgeInsets.all(AppSizes.p16),
         itemCount: _services.length,

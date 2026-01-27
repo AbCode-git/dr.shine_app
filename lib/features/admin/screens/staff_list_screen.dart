@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
-import 'package:dr_shine_app/core/constants/app_colors.dart';
-import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:dr_shine_app/features/auth/models/user_model.dart';
+import 'package:dr_shine_app/core/widgets/primary_button.dart';
+import 'package:uuid/uuid.dart';
 
 class StaffListScreen extends StatefulWidget {
   const StaffListScreen({super.key});
@@ -20,12 +20,83 @@ class _StaffListScreenState extends State<StaffListScreen> {
     });
   }
 
+  void _showStaffDialog({UserModel? staff}) {
+    final nameController = TextEditingController(text: staff?.displayName);
+    final phoneController = TextEditingController(text: staff?.phoneNumber);
+    final isEditing = staff != null;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isEditing ? 'Edit Staff member' : 'Add New Staff'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Full Name',
+                prefixIcon: Icon(Icons.person),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: phoneController,
+              decoration: const InputDecoration(
+                labelText: 'Phone Number',
+                prefixIcon: Icon(Icons.phone),
+                hintText: '+251...',
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.isEmpty || phoneController.text.isEmpty) return;
+
+              final userProvider = context.read<UserProvider>();
+              if (isEditing) {
+                await userProvider.updateUserDetails(
+                  staff.id,
+                  displayName: nameController.text,
+                  phoneNumber: phoneController.text,
+                );
+              } else {
+                final newUser = UserModel(
+                  id: const Uuid().v4(),
+                  phoneNumber: phoneController.text,
+                  displayName: nameController.text,
+                  role: 'admin',
+                  createdAt: DateTime.now(),
+                );
+                await userProvider.createUser(newUser);
+              }
+              if (mounted) Navigator.pop(context);
+            },
+            child: Text(isEditing ? 'Update' : 'Add Staff'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Staff Management')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showStaffDialog(),
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.person_add),
+      ),
       body: userProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.separated(
@@ -42,9 +113,18 @@ class _StaffListScreenState extends State<StaffListScreen> {
                     ),
                     title: Text(staff.displayName ?? 'Staff member'),
                     subtitle: Text(staff.phoneNumber),
-                    trailing: const Badge(
-                      label: Text('ADMIN'),
-                      backgroundColor: AppColors.primary,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Badge(
+                          label: Text('ADMIN'),
+                          backgroundColor: AppColors.primary,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 20, color: Colors.white38),
+                          onPressed: () => _showStaffDialog(staff: staff),
+                        ),
+                      ],
                     ),
                   ),
                 );

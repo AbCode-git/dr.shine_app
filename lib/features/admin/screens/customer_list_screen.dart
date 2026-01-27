@@ -42,24 +42,71 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                     ),
                     title: Text(customer.displayName ?? 'Customer'),
                     subtitle: Text(customer.phoneNumber),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          '${customer.loyaltyPoints} Pts',
-                          style: const TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${customer.loyaltyPoints} Pts',
+                              style: const TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text('Loyalty', style: TextStyle(fontSize: 10)),
+                          ],
                         ),
-                        const Text('Loyalty', style: TextStyle(fontSize: 10)),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.edit_note, color: Colors.white38),
+                          onPressed: () => _showLoyaltyDialog(customer),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
             ),
+    );
+  }
+
+  void _showLoyaltyDialog(dynamic customer) {
+    final controller = TextEditingController(text: customer.loyaltyPoints.toString());
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Update Loyalty: ${customer.displayName}'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Loyalty Points',
+            suffixText: 'Pts',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final points = int.tryParse(controller.text);
+              if (points != null) {
+                await context.read<UserProvider>().updateUserDetails(
+                  customer.id,
+                  loyaltyPoints: points,
+                );
+              }
+              if (mounted) Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 }
