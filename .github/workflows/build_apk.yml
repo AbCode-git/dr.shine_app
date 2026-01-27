@@ -24,7 +24,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5' # Updated to a more recent stable version
+          flutter-version: '3.27.1' # Updated to match expected generated code
           channel: 'stable'
 
       - name: Create local.properties
