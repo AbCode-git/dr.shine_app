@@ -21,7 +21,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final _colorController = TextEditingController();
   String _vehicleType = 'Sedan';
 
-  final List<String> _types = ['Sedan', 'SUV', 'Pickup', 'Van'];
+  final List<String> _types = ['Compact', 'Sedan', 'SUV', 'Pickup', 'Van'];
 
   @override
   Widget build(BuildContext context) {

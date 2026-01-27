@@ -41,7 +41,6 @@ class MockData {
     createdAt: DateTime.now(),
   );
 
-  static final vehicles = [
     VehicleModel(
       id: 'v1',
       ownerId: 'customer_456',
@@ -49,6 +48,14 @@ class MockData {
       type: 'Sedan',
       nickname: 'Work Commuter',
       color: 'Silver',
+    ),
+    VehicleModel(
+      id: 'v2',
+      ownerId: 'customer_456',
+      plateNumber: 'ETH-9876',
+      type: 'Compact',
+      nickname: 'Daily Driver',
+      color: 'Blue',
     ),
   ];
 }

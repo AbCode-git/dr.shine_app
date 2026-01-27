@@ -2,7 +2,7 @@ class VehicleModel {
   final String id;
   final String ownerId;
   final String plateNumber;
-  final String type; // Sedan, SUV, Pickup, Van
+  final String type; // Compact, Sedan, SUV, Pickup, Van
   final String? nickname;
   final String? color;
   final double? lastOilChangeMileage;
