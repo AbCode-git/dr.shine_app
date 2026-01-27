@@ -70,7 +70,7 @@ class Bubble {
     x = math.Random().nextDouble() * 400; // Screen width approx
     y = 800 + math.Random().nextDouble() * 100;
     radius = 5 + math.Random().nextDouble() * 15;
-    speed = 0.5 + math.Random().nextDouble() * 1.5;
+    speed = 0.3 + math.Random().nextDouble() * 0.7;
     drift = (math.Random().nextDouble() - 0.5) * 0.5;
     opacity = 0.1 + math.Random().nextDouble() * 0.3;
   }

@@ -8,6 +8,7 @@ import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/widgets/primary_button.dart';
 import 'package:dr_shine_app/bootstrap.dart';
 import 'package:dr_shine_app/core/widgets/bubble_animation_widget.dart';
+import 'package:dr_shine_app/features/auth/widgets/shining_car_logo.dart';
 import 'otp_verification_screen.dart';
 
 class PhoneInputScreen extends StatefulWidget {
@@ -56,6 +57,10 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        const Center(
+                          child: ShiningCarLogo(size: 140),
+                        ),
+                        const SizedBox(height: AppSizes.p24),
                         const Text(
                           'DR. SHINE',
                           style: TextStyle(

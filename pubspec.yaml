@@ -29,6 +29,7 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.6
+  lottie: ^3.1.2
 
   # UUID
   uuid: ^4.2.1
