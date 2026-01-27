@@ -122,6 +122,29 @@ class InventoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addItem(InventoryItem item) async {
+    if (!isFirebaseInitialized) {
+      _items.add(item);
+    } else {
+      await _firestore.collection('inventory').doc(item.id).set(item.toMap());
+    }
+    _mockStreamController?.add(List.from(_items));
+    notifyListeners();
+  }
+
+  Future<void> updateItem(InventoryItem item) async {
+    if (!isFirebaseInitialized) {
+      final index = _items.indexWhere((i) => i.id == item.id);
+      if (index != -1) {
+        _items[index] = item;
+      }
+    } else {
+      await _firestore.collection('inventory').doc(item.id).update(item.toMap());
+    }
+    _mockStreamController?.add(List.from(_items));
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _mockStreamController?.close();
