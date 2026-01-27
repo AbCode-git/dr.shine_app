@@ -103,19 +103,16 @@ class AuthProvider extends ChangeNotifier {
         
         // WHITELISTING LOGIC (MOCK)
         if (_phoneNumber != null && _phoneNumber!.endsWith('00')) {
-          _currentUser = MockData.superAdminUser; // Whitelisted Super Admin
+          _currentUser = MockData.superAdminUser;
         } else if (_phoneNumber != null && _phoneNumber!.endsWith('44')) {
-          _currentUser = MockData.adminUser; // Whitelisted Staff/Admin
+          _currentUser = MockData.adminUser;
         } else if (_phoneNumber != null && _phoneNumber!.endsWith('55')) {
-          _currentUser = MockData.customerUser; // Whitelisted Returning Customer
+          _currentUser = MockData.customerUser;
         } else {
-          // Non-whitelisted numbers start as new users (No PIN initially)
           _currentUser = MockData.newCustomerUser;
         }
         
-        _isLoading = false;
         await _persistMockSession(_currentUser);
-        notifyListeners();
         return;
       }
       final credential = PhoneAuthProvider.credential(
@@ -124,9 +121,11 @@ class AuthProvider extends ChangeNotifier {
       );
       await _authService.signInWithCredential(credential);
     } catch (e) {
+      debugPrint('OTP verify error: $e');
+      rethrow;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      rethrow;
     }
   }
 
@@ -185,23 +184,21 @@ class AuthProvider extends ChangeNotifier {
         if (pin == '1111') {
           _currentUser = user;
           await _persistMockSession(_currentUser);
-          _isLoading = false;
-          notifyListeners();
           return true;
         }
       }
 
-      if (!isFirebaseInitialized) {
-        return false;
-      }
+      if (!isFirebaseInitialized) return false;
       
       // Real firebase logic would involve fetching user by phone first
       // For now, in demo mode, we only support the mock numbers above.
       return false; 
     } catch (e) {
+      debugPrint('PIN verify error: $e');
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 }
