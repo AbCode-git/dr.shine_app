@@ -30,7 +30,7 @@ class SuperAdminDashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildOverviewCards(),
+            _buildOverviewCards(context),
             const SizedBox(height: AppSizes.p24),
             _buildManagementSection(
               context,
@@ -181,15 +181,26 @@ class SuperAdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOverviewCards() {
+  Widget _buildOverviewCards(BuildContext context) {
+    final bookingProvider = context.watch<BookingProvider>();
+    final allBookings = bookingProvider.bookings;
+    
+    final totalSales = allBookings
+        .where((b) => b.status == 'completed')
+        .fold<double>(0, (sum, b) => sum + b.price);
+        
+    final activeJobs = allBookings
+        .where((b) => b.status != 'completed' && b.status != 'cancelled')
+        .length;
+
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard('Total Sales', '12.5k ETB', Icons.payments, Colors.green),
+          child: _buildStatCard('Total Sales', totalSales > 1000 ? '${(totalSales / 1000).toStringAsFixed(1)}k ETB' : '${totalSales.toStringAsFixed(0)} ETB', Icons.payments, Colors.green),
         ),
         const SizedBox(width: AppSizes.p12),
         Expanded(
-          child: _buildStatCard('Active Jobs', '8', Icons.local_car_wash, AppColors.primary),
+          child: _buildStatCard('Active Jobs', activeJobs.toString(), Icons.local_car_wash, AppColors.primary),
         ),
       ],
     );

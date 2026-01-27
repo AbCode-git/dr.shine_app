@@ -4,6 +4,7 @@ import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dar
 import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:uuid/uuid.dart';
 
 class InventoryItemFormScreen extends StatefulWidget {
   final InventoryItem? item;
@@ -123,19 +124,30 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
     );
   }
 
-  void _saveItem() {
+  void _saveItem() async {
     if (_formKey.currentState!.validate()) {
       final inventoryProvider = context.read<InventoryProvider>();
       
+      final itemData = InventoryItem(
+        id: widget.item?.id ?? const Uuid().v4(),
+        name: _nameController.text,
+        category: _category,
+        currentStock: double.tryParse(_currentStockController.text) ?? 0,
+        minStockLevel: double.tryParse(_minStockController.text) ?? 10.0,
+        reorderLevel: double.tryParse(_reorderController.text) ?? 20.0,
+        unit: _unitController.text,
+        costPerUnit: double.tryParse(_costController.text) ?? 0,
+        viscosityGrade: _category == InventoryCategory.oilChange ? _viscosityController.text : null,
+      );
+
       if (widget.item == null) {
-        // Mock add logic
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inventory item created successfully')));
+        await inventoryProvider.addItem(itemData);
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inventory item created successfully')));
       } else {
-        // Mock update logic
-        // inventoryProvider.updateItem(...)
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inventory updated successfully')));
+        await inventoryProvider.updateItem(itemData);
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Inventory updated successfully')));
       }
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     }
   }
 }
