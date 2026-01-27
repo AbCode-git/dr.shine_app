@@ -20,10 +20,16 @@ class AuthService {
     required Function(String verificationId) onCodeSent,
     required Function(FirebaseAuthException e) onVerificationFailed,
   }) async {
-    if (!isFirebaseInitialized) {
-      // Simulate code sent for mock testing
+    // Mock bypass for demo numbers
+    if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44') || phoneNumber.endsWith('55')) {
       await Future.delayed(const Duration(seconds: 1));
       onCodeSent('mock_verification_id');
+      return;
+    }
+
+    if (!isFirebaseInitialized) {
+      // Return error for unknown numbers if Firebase is not initialized
+      onVerificationFailed(FirebaseAuthException(code: 'network-request-failed', message: 'Firebase not initialized. Use a demo number.'));
       return;
     }
     await _auth.verifyPhoneNumber(

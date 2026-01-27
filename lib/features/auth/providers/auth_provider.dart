@@ -98,7 +98,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized && _verificationId == 'mock_verification_id') {
+      if (_verificationId == 'mock_verification_id') {
         await Future.delayed(const Duration(seconds: 1));
         
         // WHITELISTING LOGIC (MOCK)
@@ -170,7 +170,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized) {
+      // Mock bypass for demo numbers
+      if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44') || phoneNumber.endsWith('55')) {
         await Future.delayed(const Duration(seconds: 1));
         UserModel? user;
         if (phoneNumber.endsWith('00')) {
@@ -181,20 +182,21 @@ class AuthProvider extends ChangeNotifier {
           user = MockData.customerUser;
         }
 
-        if (pin == '1111') { // Mock PIN
+        if (pin == '1111') {
           _currentUser = user;
           await _persistMockSession(_currentUser);
           _isLoading = false;
           notifyListeners();
           return true;
         }
+      }
+
+      if (!isFirebaseInitialized) {
         return false;
       }
       
       // Real firebase logic would involve fetching user by phone first
-      // For now, let's assume we fetch user data and check pin
-      // This part depends on how you want to handle "Login with PIN"
-      // Usually, you need a way to identify the user first.
+      // For now, in demo mode, we only support the mock numbers above.
       return false; 
     } catch (e) {
       _isLoading = false;
