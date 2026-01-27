@@ -33,8 +33,17 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Clean Flutter cache
+        run: flutter clean
+
+      - name: Fix GeneratedPluginRegistrant import (temporary safety net)
+        run: |
+          if [ -f android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java ]; then
+            sed -i 's/import io.flutter.Log;/import android.util.Log;/' android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+          fi
+
       - name: Build APK (Release)
-        run: flutter build apk --release
+        run: flutter build apk --release --verbose
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
