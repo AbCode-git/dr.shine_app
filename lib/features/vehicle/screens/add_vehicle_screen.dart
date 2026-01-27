@@ -41,6 +41,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 controller: _plateController,
                 decoration: const InputDecoration(
                   labelText: 'Plate Number',
+                  hintText: 'e.g. 2AA12345',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.numbers),
                 ),

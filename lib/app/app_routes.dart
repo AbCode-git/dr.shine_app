@@ -12,6 +12,8 @@ import 'package:dr_shine_app/features/admin/screens/super_admin_dashboard_screen
 import 'package:dr_shine_app/features/admin/screens/staff_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/customer_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/service_price_editor.dart';
+import 'package:dr_shine_app/features/booking/screens/booking_details_screen.dart';
+import 'package:dr_shine_app/features/booking/models/booking_model.dart';
 import 'package:dr_shine_app/features/auth/screens/pin_setup_screen.dart';
 import 'package:dr_shine_app/features/auth/screens/pin_login_screen.dart';
 import 'package:dr_shine_app/features/auth/screens/profile_screen.dart';
@@ -27,6 +29,7 @@ class AppRoutes {
   static const String vehicleList = '/vehicle-list';
   static const String booking = '/booking';
   static const String bookingList = '/booking-list';
+  static const String bookingDetails = '/booking-details';
   static const String admin = '/admin';
   static const String superAdmin = '/super-admin';
   static const String staffManagement = '/staff-management';
@@ -55,6 +58,15 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const CreateBookingScreen());
       case bookingList:
         return MaterialPageRoute(builder: (_) => const BookingListScreen());
+      case bookingDetails:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => BookingDetailsScreen(
+            booking: args['booking'] as BookingModel,
+            serviceName: args['serviceName'] as String,
+            vehicleInfo: args['vehicleInfo'] as String,
+          ),
+        );
       case admin:
         return MaterialPageRoute(builder: (_) => const AdminDashboardScreen());
       case superAdmin:

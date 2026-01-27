@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:dr_shine_app/features/booking/models/booking_model.dart';
-import 'package:dr_shine_app/core/constants/app_colors.dart';
-import 'package:dr_shine_app/core/constants/app_sizes.dart';
-import 'package:dr_shine_app/core/utils/formatters.dart';
+import 'package:dr_shine_app/app/app_routes.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingModel booking;
@@ -18,42 +14,59 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSizes.p16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Hero(
+      tag: 'booking_${booking.id}',
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.bookingDetails,
+              arguments: {
+                'booking': booking,
+                'serviceName': serviceName,
+                'vehicleInfo': vehicleInfo,
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(AppSizes.p16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  serviceName,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      serviceName,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    _buildStatusBadge(booking.status),
+                  ],
                 ),
-                _buildStatusBadge(booking.status),
+                const SizedBox(height: AppSizes.p8),
+                Text(vehicleInfo, style: const TextStyle(color: AppColors.textSecondary)),
+                const Divider(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppFormatters.formatDate(booking.bookingDate),
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      AppFormatters.formatCurrency(booking.price),
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-            const SizedBox(height: AppSizes.p8),
-            Text(vehicleInfo, style: const TextStyle(color: AppColors.textSecondary)),
-            const Divider(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppFormatters.formatDate(booking.bookingDate),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  AppFormatters.formatCurrency(booking.price),
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
