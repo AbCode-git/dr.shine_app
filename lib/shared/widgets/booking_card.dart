@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:dr_shine_app/features/booking/models/booking_model.dart';
+import 'package:dr_shine_app/core/constants/app_colors.dart';
+import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:dr_shine_app/core/utils/formatters.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
 
 class BookingCard extends StatelessWidget {

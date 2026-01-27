@@ -41,6 +41,7 @@ class MockData {
     createdAt: DateTime.now(),
   );
 
+  static final vehicles = [
     VehicleModel(
       id: 'v1',
       ownerId: 'customer_456',
