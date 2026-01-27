@@ -109,46 +109,58 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                           onPressed: () async {
                             final phone = _phoneController.text.trim();
                             if (phone.isNotEmpty) {
-                              if (!isFirebaseInitialized) {
-                                if (phone.endsWith('00') || phone.endsWith('44') || phone.endsWith('55')) {
-                                   Navigator.pushNamed(context, '/pin-login', arguments: phone);
-                                   return;
-                                }
+                              // Check for mock users (demo mode)
+                              if (phone.endsWith('00') || phone.endsWith('44') || phone.endsWith('55')) {
+                                 Navigator.pushNamed(context, '/pin-login', arguments: phone);
+                                 return;
                               }
-                              await authProvider.verifyPhone(phone);
-                              if (context.mounted) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => OtpVerificationScreen(phoneNumber: phone),
-                                  ),
-                                );
+                              
+                              // Only attempt Firebase auth if initialized
+                              if (isFirebaseInitialized) {
+                                await authProvider.verifyPhone(phone);
+                                if (context.mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => OtpVerificationScreen(phoneNumber: phone),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // Show error if not a mock user and Firebase not available
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Demo mode: Use quick access buttons below'),
+                                      backgroundColor: AppColors.primary,
+                                    ),
+                                  );
+                                }
                               }
                             }
                           },
                         ),
-                        if (!isFirebaseInitialized) ...[
-                          const SizedBox(height: AppSizes.p40),
-                          const Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.white10)),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Text('QUICK ACCESS', style: TextStyle(color: Colors.white24, fontSize: 10, letterSpacing: 1)),
-                              ),
-                              Expanded(child: Divider(color: Colors.white10)),
-                            ],
-                          ),
-                          const SizedBox(height: AppSizes.p20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildQuickLoginButton(context, 'Customer', '+251 9...55'),
-                              _buildQuickLoginButton(context, 'Staff', '+251 9...44'),
-                              _buildQuickLoginButton(context, 'Manager', '+251 9...00'),
-                            ],
-                          ),
-                        ],
+                        // Quick Access Buttons (always visible for demo)
+                        const SizedBox(height: AppSizes.p40),
+                        const Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.white10)),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text('QUICK ACCESS', style: TextStyle(color: Colors.white24, fontSize: 10, letterSpacing: 1)),
+                            ),
+                            Expanded(child: Divider(color: Colors.white10)),
+                          ],
+                        ),
+                        const SizedBox(height: AppSizes.p20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildQuickLoginButton(context, 'Customer', '+251 9...55'),
+                            _buildQuickLoginButton(context, 'Staff', '+251 9...44'),
+                            _buildQuickLoginButton(context, 'Manager', '+251 9...00'),
+                          ],
+                        ),
                       ],
                     ),
                   ),
