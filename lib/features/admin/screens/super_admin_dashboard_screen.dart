@@ -247,12 +247,24 @@ class SuperAdminDashboardScreen extends StatelessWidget {
               onTap: () {
                 if (itemValue == 'Manage Staff Accounts') {
                   Navigator.pushNamed(context, AppRoutes.staffManagement);
-                } else if (itemValue == 'Customer Directory') {
-                  Navigator.pushNamed(context, AppRoutes.customerDirectory);
+                } else if (itemValue == 'Duty Roster') {
+                  Navigator.pushNamed(context, AppRoutes.dutyRoster);
+                } else if (itemValue == 'Performance Analytics') {
+                  Navigator.pushNamed(context, AppRoutes.performanceAnalytics);
                 } else if (itemValue == 'Update Service Pricing') {
+                  Navigator.pushNamed(context, AppRoutes.servicePricing);
+                } else if (itemValue == 'Manage Wash Services') {
                   Navigator.pushNamed(context, AppRoutes.servicePricing);
                 } else if (itemValue == 'Inventory Management') {
                   Navigator.pushNamed(context, AppRoutes.inventory);
+                } else if (itemValue == 'App Configurations') {
+                  Navigator.pushNamed(context, AppRoutes.appConfig);
+                } else if (itemValue == 'Customer Directory') {
+                  Navigator.pushNamed(context, AppRoutes.customerDirectory);
+                } else if (itemValue == 'Loyalty Program Stats') {
+                  Navigator.pushNamed(context, AppRoutes.loyaltyAnalytics);
+                } else if (itemValue == 'Feedback & Reviews') {
+                  Navigator.pushNamed(context, AppRoutes.feedbackList);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('$itemValue details coming soon!')),

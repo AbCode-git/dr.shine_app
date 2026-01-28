@@ -21,6 +21,11 @@ import 'package:dr_shine_app/features/inventory/screens/inventory_list_screen.da
 import 'package:dr_shine_app/features/inventory/screens/inventory_item_form_screen.dart';
 import 'package:dr_shine_app/features/inventory/screens/inventory_analytics_screen.dart';
 import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart';
+import 'package:dr_shine_app/features/admin/screens/duty_roster_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/performance_analytics_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/app_config_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/feedback_list_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/loyalty_analytics_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -43,6 +48,11 @@ class AppRoutes {
   static const String inventory = '/inventory';
   static const String inventoryForm = '/inventory-form';
   static const String inventoryAnalytics = '/inventory-analytics';
+  static const String dutyRoster = '/duty-roster';
+  static const String performanceAnalytics = '/performance-analytics';
+  static const String appConfig = '/app-config';
+  static const String feedbackList = '/feedback-list';
+  static const String loyaltyAnalytics = '/loyalty-analytics';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -95,6 +105,16 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => InventoryItemFormScreen(item: item));
       case inventoryAnalytics:
         return MaterialPageRoute(builder: (_) => const InventoryAnalyticsScreen());
+      case dutyRoster:
+        return MaterialPageRoute(builder: (_) => const DutyRosterScreen());
+      case performanceAnalytics:
+        return MaterialPageRoute(builder: (_) => const PerformanceAnalyticsScreen());
+      case appConfig:
+        return MaterialPageRoute(builder: (_) => const AppConfigScreen());
+      case feedbackList:
+        return MaterialPageRoute(builder: (_) => const FeedbackListScreen());
+      case loyaltyAnalytics:
+        return MaterialPageRoute(builder: (_) => const LoyaltyAnalyticsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
