@@ -13,6 +13,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
   bool _maintenanceMode = false;
   bool _bookingsOpen = true;
   String _supportPhone = '+251911234567';
+  String _bannerMessage = 'Welcome to Dr. Shine! Book your wash now.';
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +48,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
               title: const Text('Support Contact Number'),
               subtitle: Text(_supportPhone),
               trailing: const Icon(Icons.edit, size: 16),
-              onTap: () {
-                // Show edit dialog
-              },
+              onTap: () => _editSupportPhone(),
             ),
           ),
           const SizedBox(height: 32),
@@ -59,9 +58,9 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
             child: ListTile(
               leading: const Icon(Icons.campaign, color: Colors.orange),
               title: const Text('Dashboard Banner Message'),
-              subtitle: const Text('Welcome to Dr. Shine! Book your wash now.'),
+              subtitle: Text(_bannerMessage),
               trailing: const Icon(Icons.edit, size: 16),
-              onTap: () {},
+              onTap: () => _editBannerMessage(),
             ),
           ),
           const SizedBox(height: 40),
@@ -76,6 +75,59 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
               backgroundColor: AppColors.primary,
             ),
             child: const Text('SAVE CHANGES'),
+          ),
+        ],
+      ),
+    );
+  }
+
+    );
+  }
+
+  void _editSupportPhone() {
+    final controller = TextEditingController(text: _supportPhone);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Support Phone'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(labelText: 'Phone Number'),
+          keyboardType: TextInputType.phone,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+            onPressed: () {
+              setState(() => _supportPhone = controller.text);
+              Navigator.pop(context);
+            },
+            child: const Text('SAVE'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editBannerMessage() {
+    final controller = TextEditingController(text: _bannerMessage);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Banner Message'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(labelText: 'Message'),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+            onPressed: () {
+              setState(() => _bannerMessage = controller.text);
+              Navigator.pop(context);
+            },
+            child: const Text('SAVE'),
           ),
         ],
       ),

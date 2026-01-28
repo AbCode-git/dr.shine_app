@@ -147,8 +147,11 @@ class AdminDashboardScreen extends StatelessWidget {
         final items = snapshot.data ?? [];
         final lowStockItems = items.where((i) => i.isLowStock).toList();
 
-        return Container(
-          padding: const EdgeInsets.all(16),
+        return InkWell(
+          onTap: () => Navigator.pushNamed(context, '/inventory'),
+          borderRadius: BorderRadius.circular(AppSizes.r12),
+          child: Container(
+            padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: lowStockItems.isNotEmpty ? Colors.redAccent.withOpacity(0.1) : AppColors.surface,
             borderRadius: BorderRadius.circular(AppSizes.r12),
