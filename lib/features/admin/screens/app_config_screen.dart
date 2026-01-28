@@ -78,10 +78,6 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
           ),
         ],
       ),
-    );
-  }
-
-    );
   }
 
   void _editSupportPhone() {
