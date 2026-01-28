@@ -9,6 +9,12 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Loyalty Program Stats')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showConfigDialog(context),
+        backgroundColor: Colors.orange,
+        icon: const Icon(Icons.settings),
+        label: const Text('CONFIGURE RULES'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
@@ -21,6 +27,55 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
             _buildLoyaltyLeaderboard(),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showConfigDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Program Configuration'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildConfigRow('Points Per Wash', '1'),
+            _buildConfigRow('Free Wash threshold', '5'),
+            _buildConfigRow('Birthday bonus', '2'),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('UPDATE RULES'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConfigRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 13)),
+          SizedBox(
+            width: 60,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: value,
+                isDense: true,
+                border: const OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+        ],
       ),
     );
   }

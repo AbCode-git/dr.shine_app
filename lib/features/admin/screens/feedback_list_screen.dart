@@ -50,11 +50,50 @@ class FeedbackListScreen extends StatelessWidget {
                     fb['comment'] as String,
                     style: const TextStyle(color: Colors.white70, height: 1.4),
                   ),
+                  const SizedBox(height: 16),
+                  const Divider(color: Colors.white10),
+                  TextButton.icon(
+                    onPressed: () => _showReplyDialog(context, fb['user'] as String),
+                    icon: const Icon(Icons.reply, size: 16),
+                    label: const Text('REPLY TO CUSTOMER'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showReplyDialog(BuildContext context, String userName) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reply to $userName'),
+        content: const TextField(
+          decoration: InputDecoration(
+            hintText: 'Type your response...',
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Response sent to $userName')),
+              );
+            },
+            child: const Text('SEND REPLY'),
+          ),
+        ],
       ),
     );
   }

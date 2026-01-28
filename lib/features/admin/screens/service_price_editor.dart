@@ -13,6 +13,7 @@ class ServicePriceEditor extends StatefulWidget {
 
 class _ServicePriceEditorState extends State<ServicePriceEditor> {
   late List<ServiceModel> _services;
+  final Map<String, bool> _activeStatus = {};
 
   @override
   void initState() {
@@ -136,13 +137,35 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final service = _services[index];
+          final isActive = _activeStatus[service.id] ?? true;
+
           return Card(
             child: ListTile(
-              title: Text(service.name),
+              title: Text(
+                service.name,
+                style: TextStyle(
+                  color: isActive ? Colors.white : Colors.white38,
+                  decoration: isActive ? null : TextDecoration.lineThrough,
+                ),
+              ),
               subtitle: Text('${service.price.toInt()} ETB'),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit, color: AppColors.primary),
-                onPressed: () => _editService(index),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Switch(
+                    value: isActive,
+                    onChanged: (val) {
+                      setState(() {
+                        _activeStatus[service.id] = val;
+                      });
+                    },
+                    activeColor: AppColors.primary,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20, color: Colors.white38),
+                    onPressed: () => _editService(index),
+                  ),
+                ],
               ),
             ),
           );
