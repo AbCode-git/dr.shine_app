@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
-import 'package:dr_shine_app/features/vehicle/providers/vehicle_provider.dart';
 import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/status/providers/status_provider.dart';
 import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
@@ -19,8 +18,6 @@ class DrShineApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (_) => AuthProvider(locator.authRepository)),
-        ChangeNotifierProvider(
-            create: (_) => VehicleProvider(locator.vehicleRepository)),
         ChangeNotifierProvider(
             create: (_) => BookingProvider(locator.bookingRepository)),
         ChangeNotifierProvider(

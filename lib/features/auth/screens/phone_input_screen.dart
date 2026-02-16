@@ -197,15 +197,15 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildRoleTile(context, 'Staff', Icons.bolt_rounded, '+251 9...44',
-                Colors.orange),
-            const SizedBox(width: 16),
             _buildRoleTile(
                 context,
                 'Manager',
                 Icons.admin_panel_settings_rounded,
                 '+251 9...00',
                 AppColors.primary),
+            const SizedBox(width: 16),
+            _buildRoleTile(context, 'Staff', Icons.bolt_rounded, '+251 9...44',
+                Colors.orange),
           ],
         ),
       ],
@@ -254,7 +254,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty) return;
 
-    if (phone.endsWith('00') || phone.endsWith('44') || phone.endsWith('55')) {
+    if (phone.endsWith('00') || phone.endsWith('44')) {
       Navigator.pushNamed(context, AppRoutes.pinLogin, arguments: phone);
       return;
     }

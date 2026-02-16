@@ -18,9 +18,7 @@ class MockAuthRepository implements IAuthRepository {
     required Function(Exception e) onVerificationFailed,
   }) async {
     // Mock bypass for demo numbers
-    if (phoneNumber.endsWith('00') ||
-        phoneNumber.endsWith('44') ||
-        phoneNumber.endsWith('55')) {
+    if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44')) {
       await Future.delayed(const Duration(seconds: 1));
       onCodeSent('mock_verification_id');
     } else {
@@ -46,7 +44,6 @@ class MockAuthRepository implements IAuthRepository {
     // In mock mode, we usually return a hardcoded user based on whitelisting in Provider
     // or we can simulate firestore fetch here.
     if (uid == 'mock_admin_uid') return MockData.adminUser;
-    if (uid == 'mock_customer_uid') return MockData.customerUser;
     return _mockUser;
   }
 

@@ -6,10 +6,6 @@ import 'package:dr_shine_app/features/auth/repositories/user_repository.dart';
 import 'package:dr_shine_app/features/auth/repositories/mock_user_repository.dart';
 import 'package:dr_shine_app/features/auth/repositories/firebase_user_repository.dart';
 
-import 'package:dr_shine_app/features/vehicle/repositories/vehicle_repository.dart';
-import 'package:dr_shine_app/features/vehicle/repositories/mock_vehicle_repository.dart';
-import 'package:dr_shine_app/features/vehicle/repositories/firebase_vehicle_repository.dart';
-
 import 'package:dr_shine_app/features/inventory/repositories/inventory_repository.dart';
 import 'package:dr_shine_app/features/inventory/repositories/mock_inventory_repository.dart';
 import 'package:dr_shine_app/features/inventory/repositories/firebase_inventory_repository.dart';
@@ -31,7 +27,7 @@ class ServiceLocator {
 
   late final IBookingRepository bookingRepository;
   late final IUserRepository userRepository;
-  late final IVehicleRepository vehicleRepository;
+
   late final IInventoryRepository inventoryRepository;
   late final IStatusRepository statusRepository;
   late final IAuthRepository authRepository;
@@ -40,14 +36,14 @@ class ServiceLocator {
     if (isFirebaseInitialized) {
       bookingRepository = FirebaseBookingRepository();
       userRepository = FirebaseUserRepository();
-      vehicleRepository = FirebaseVehicleRepository();
+
       inventoryRepository = FirebaseInventoryRepository();
       statusRepository = FirebaseStatusRepository();
       authRepository = FirebaseAuthRepository();
     } else {
       bookingRepository = MockBookingRepository();
       userRepository = MockUserRepository();
-      vehicleRepository = MockVehicleRepository();
+
       inventoryRepository = MockInventoryRepository();
       statusRepository = MockStatusRepository();
       authRepository = MockAuthRepository();

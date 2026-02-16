@@ -1,0 +1,14 @@
+Analyzing dr_shine_restructured...                              
+
+  error - Target of URI doesn't exist: 'package:dr_shine_app/features/vehicle/providers/vehicle_provider.dart' - lib\app\app.dart:4:8 - uri_does_not_exist
+  error - The method 'VehicleProvider' isn't defined for the type 'DrShineApp' - lib\app\app.dart:23:28 - undefined_method
+  error - Target of URI doesn't exist: 'package:dr_shine_app/features/vehicle/repositories/vehicle_repository.dart' - lib\core\services\service_locator.dart:9:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: 'package:dr_shine_app/features/vehicle/repositories/mock_vehicle_repository.dart' - lib\core\services\service_locator.dart:10:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: 'package:dr_shine_app/features/vehicle/repositories/firebase_vehicle_repository.dart' - lib\core\services\service_locator.dart:11:8 - uri_does_not_exist
+  error - Undefined class 'IVehicleRepository' - lib\core\services\service_locator.dart:34:14 - undefined_class
+  error - The method 'FirebaseVehicleRepository' isn't defined for the type 'ServiceLocator' - lib\core\services\service_locator.dart:43:27 - undefined_method
+  error - The method 'MockVehicleRepository' isn't defined for the type 'ServiceLocator' - lib\core\services\service_locator.dart:50:27 - undefined_method
+  error - Target of URI doesn't exist: 'package:dr_shine_app/features/vehicle/models/vehicle_model.dart' - lib\shared\widgets\vehicle_card.dart:2:8 - uri_does_not_exist
+  error - Undefined class 'VehicleModel' - lib\shared\widgets\vehicle_card.dart:7:9 - undefined_class
+
+10 issues found. (ran in 79.9s)

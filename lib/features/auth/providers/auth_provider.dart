@@ -115,10 +115,9 @@ class AuthProvider extends ChangeNotifier {
           _currentUser = MockData.superAdminUser;
         } else if (_phoneNumber != null && _phoneNumber!.endsWith('44')) {
           _currentUser = MockData.adminUser;
-        } else if (_phoneNumber != null && _phoneNumber!.endsWith('55')) {
-          _currentUser = MockData.customerUser;
         } else {
-          _currentUser = MockData.newCustomerUser;
+          // Default to a guest/new admin if needed, but not customer
+          _currentUser = null;
         }
 
         await _persistMockSession(_currentUser);
@@ -174,17 +173,13 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       // Mock bypass
-      if (phoneNumber.endsWith('00') ||
-          phoneNumber.endsWith('44') ||
-          phoneNumber.endsWith('55')) {
+      if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44')) {
         await Future.delayed(const Duration(seconds: 1));
         UserModel? user;
         if (phoneNumber.endsWith('00')) {
           user = MockData.superAdminUser;
-        } else if (phoneNumber.endsWith('44')) {
-          user = MockData.adminUser;
         } else {
-          user = MockData.customerUser;
+          user = MockData.adminUser;
         }
 
         if (pin == '1111') {
