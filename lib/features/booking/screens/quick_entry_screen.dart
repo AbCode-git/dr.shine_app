@@ -219,7 +219,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                       Expanded(
                         flex: 2,
                         child: DropdownButtonFormField<String>(
-                          initialValue: _selectedBrand,
+                          value: _selectedBrand,
                           decoration: InputDecoration(
                             labelText: 'Brand',
                             prefixIcon: const Icon(Icons.business),
@@ -376,7 +376,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                 title: 'Assign Washer',
                 children: [
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedWasherId,
+                    value: _selectedWasherId,
                     decoration: InputDecoration(
                       labelText: 'Select Staff Member',
                       prefixIcon: const Icon(Icons.badge),

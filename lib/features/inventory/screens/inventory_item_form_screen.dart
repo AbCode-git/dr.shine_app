@@ -117,7 +117,7 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
 
   Widget _buildDropdown() {
     return DropdownButtonFormField<InventoryCategory>(
-      initialValue: _category,
+      value: _category,
       decoration: InputDecoration(
         labelText: 'Category',
         prefixIcon: const Icon(Icons.category, color: AppColors.primary),

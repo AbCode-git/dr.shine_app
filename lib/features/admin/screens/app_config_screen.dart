@@ -67,7 +67,8 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Configuration saved successfully')),
+                const SnackBar(
+                    content: Text('Configuration saved successfully')),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -93,7 +94,9 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
           keyboardType: TextInputType.phone,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCEL')),
           TextButton(
             onPressed: () {
               setState(() => _supportPhone = controller.text);
@@ -118,7 +121,9 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
           maxLines: 3,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCEL')),
           TextButton(
             onPressed: () {
               setState(() => _bannerMessage = controller.text);
@@ -143,15 +148,17 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
     );
   }
 
-  Widget _buildToggleTile(String title, String subtitle, IconData icon, bool value, Function(bool) onChanged) {
+  Widget _buildToggleTile(String title, String subtitle, IconData icon,
+      bool value, Function(bool) onChanged) {
     return Card(
       child: SwitchListTile(
         title: Text(title),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.white38)),
+        subtitle: Text(subtitle,
+            style: const TextStyle(fontSize: 12, color: Colors.white38)),
         secondary: Icon(icon, color: AppColors.primary),
         value: value,
         onChanged: onChanged,
-        activeThumbColor: AppColors.primary,
+        activeColor: AppColors.primary,
       ),
     );
   }
