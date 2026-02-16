@@ -45,11 +45,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.numbers),
                 ),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: AppSizes.p16),
               DropdownButtonFormField<String>(
-                value: _vehicleType,
+                initialValue: _vehicleType,
                 decoration: const InputDecoration(
                   labelText: 'Vehicle Type',
                   border: OutlineInputBorder(),
@@ -92,8 +93,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       nickname: _nicknameController.text.trim(),
                       color: _colorController.text.trim(),
                     );
+                    final navigator = Navigator.of(context);
                     await vehicleProvider.registerVehicle(vehicle);
-                    if (mounted) Navigator.pop(context);
+                    if (mounted) {
+                      navigator.pop();
+                    }
                   }
                 },
               ),

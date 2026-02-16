@@ -1,60 +1,45 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dr_shine_app/bootstrap.dart';
+import 'package:dr_shine_app/features/status/repositories/status_repository.dart';
+import 'package:dr_shine_app/core/services/logger_service.dart';
 
 enum BusyStatus { notBusy, busy, veryBusy }
 
 class StatusProvider extends ChangeNotifier {
-  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  
+  final IStatusRepository _repository;
+
   BusyStatus _currentStatus = BusyStatus.notBusy;
+  StreamSubscription? _statusSubscription;
 
   BusyStatus get currentStatus => _currentStatus;
 
-  StatusProvider() {
+  StatusProvider(this._repository) {
     _listenToStatus();
   }
 
   void _listenToStatus() {
-    if (!isFirebaseInitialized) return;
-    _firestore.collection('status').doc('current').snapshots().listen((doc) {
-      if (doc.exists) {
-        final statusStr = doc.data()?['value'] ?? 'notBusy';
-        _currentStatus = _parseStatus(statusStr);
+    _statusSubscription = _repository.getStatusStream().listen(
+      (status) {
+        _currentStatus = status;
         notifyListeners();
-      }
-    });
-  }
-
-  BusyStatus _parseStatus(String status) {
-    switch (status) {
-      case 'busy':
-        return BusyStatus.busy;
-      case 'veryBusy':
-        return BusyStatus.veryBusy;
-      default:
-        return BusyStatus.notBusy;
-    }
-  }
-
-  String _statusToString(BusyStatus status) {
-    switch (status) {
-      case BusyStatus.busy:
-        return 'busy';
-      case BusyStatus.veryBusy:
-        return 'veryBusy';
-      default:
-        return 'notBusy';
-    }
+      },
+      onError: (e) => LoggerService.error('Status stream error in provider', e),
+    );
   }
 
   // Update status (Admin only)
   Future<void> updateStatus(BusyStatus status) async {
-    if (!isFirebaseInitialized) {
-      _currentStatus = status;
-      notifyListeners();
-      return;
+    try {
+      await _repository.updateStatus(status);
+    } catch (e) {
+      LoggerService.error('Failed to update status in provider', e);
+      rethrow;
     }
-    await _firestore.collection('status').doc('current').set({'value': _statusToString(status)});
+  }
+
+  @override
+  void dispose() {
+    _statusSubscription?.cancel();
+    super.dispose();
   }
 }

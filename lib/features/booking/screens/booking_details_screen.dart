@@ -31,23 +31,28 @@ class BookingDetailsScreen extends StatelessWidget {
               tag: 'booking_${booking.id}',
               child: Container(
                 height: 200,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.secondary],
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.1),
+                      AppColors.secondary
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
                 child: Center(
                   child: Icon(
-                    booking.status == 'completed' ? Icons.check_circle_outline : Icons.local_car_wash,
+                    booking.status == 'completed'
+                        ? Icons.check_circle_outline
+                        : Icons.local_car_wash,
                     size: 80,
                     color: Colors.white,
                   ),
                 ),
               ),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.all(AppSizes.p24),
               child: Column(
@@ -58,7 +63,8 @@ class BookingDetailsScreen extends StatelessWidget {
                     children: [
                       Text(
                         serviceName,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       _buildStatusBadge(booking.status),
                     ],
@@ -66,16 +72,17 @@ class BookingDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     vehicleInfo,
-                    style: const TextStyle(fontSize: 18, color: AppColors.textSecondary),
+                    style: const TextStyle(
+                        fontSize: 18, color: AppColors.textSecondary),
                   ),
                   const Divider(height: 48),
-                  
-                  _buildDetailRow(Icons.calendar_today, 'Date', AppFormatters.formatDate(booking.bookingDate)),
+                  _buildDetailRow(Icons.calendar_today, 'Date',
+                      AppFormatters.formatDate(booking.bookingDate)),
                   const SizedBox(height: 24),
-                  _buildDetailRow(Icons.payments, 'Price', AppFormatters.formatCurrency(booking.price)),
+                  _buildDetailRow(Icons.payments, 'Price',
+                      AppFormatters.formatCurrency(booking.price)),
                   const SizedBox(height: 24),
                   _buildDetailRow(Icons.info_outline, 'Booking ID', booking.id),
-                  
                   if (booking.status == 'completed') ...[
                     const SizedBox(height: 48),
                     Center(
@@ -85,7 +92,8 @@ class BookingDetailsScreen extends StatelessWidget {
                         label: const Text('Rate this Service'),
                         style: TextButton.styleFrom(
                           foregroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           side: const BorderSide(color: AppColors.primary),
                         ),
                       ),
@@ -108,8 +116,12 @@ class BookingDetailsScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 12, color: AppColors.textSecondary)),
+            Text(value,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
       ],
@@ -135,13 +147,17 @@ class BookingDetailsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color),
       ),
       child: Text(
         status.toUpperCase(),
-        style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
+        style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
       ),
     );
   }

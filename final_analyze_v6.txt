@@ -1,0 +1,5 @@
+Analyzing dr_shine_restructured...                              
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\booking\screens\booking_details_screen.dart:150:22 - deprecated_member_use
+
+1 issue found. (ran in 6.3s)

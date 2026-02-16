@@ -18,11 +18,15 @@ class InventoryAnalyticsScreen extends StatelessWidget {
           children: [
             _buildSummaryRow(),
             const SizedBox(height: AppSizes.p24),
-            _buildChartSection('Usage Trends (Mock)', 'Weekly consumption of soap and oil.'),
+            _buildChartSection(
+                'Usage Trends (Mock)', 'Weekly consumption of soap and oil.'),
             const SizedBox(height: AppSizes.p24),
             _buildCostAnalysis(),
             const SizedBox(height: AppSizes.p24),
-            _buildAlertBox('REORDER SUGGESTIONS', '3 items are below reorder level. Click to restock.', Icons.history_edu),
+            _buildAlertBox(
+                'REORDER SUGGESTIONS',
+                '3 items are below reorder level. Click to restock.',
+                Icons.history_edu),
           ],
         ),
       ),
@@ -32,35 +36,47 @@ class InventoryAnalyticsScreen extends StatelessWidget {
   Widget _buildSummaryRow() {
     return Row(
       children: [
-        Expanded(child: _buildValueCard('Total Value', '42.5k', 'ETB', Icons.account_balance_wallet, Colors.greenAccent)),
+        Expanded(
+            child: _buildValueCard('Total Value', '42.5k', 'ETB',
+                Icons.account_balance_wallet, Colors.greenAccent)),
         const SizedBox(width: 16),
-        Expanded(child: _buildValueCard('Utilization', '82%', 'Cap.', Icons.trending_up, AppColors.primary)),
+        Expanded(
+            child: _buildValueCard('Utilization', '82%', 'Cap.',
+                Icons.trending_up, AppColors.primary)),
       ],
     );
   }
 
-  Widget _buildValueCard(String title, String val, String unit, IconData icon, Color color) {
+  Widget _buildValueCard(
+      String title, String val, String unit, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.r24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(height: 12),
-          Text(title, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+          Text(title,
+              style: const TextStyle(color: Colors.white38, fontSize: 11)),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(val, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: -0.5)),
+              Text(val,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5)),
               const SizedBox(width: 4),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: Text(unit, style: const TextStyle(fontSize: 10, color: Colors.white24)),
+                child: Text(unit,
+                    style:
+                        const TextStyle(fontSize: 10, color: Colors.white24)),
               ),
             ],
           ),
@@ -75,14 +91,15 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.r24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSubtitle(title),
           const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: Colors.white24, fontSize: 11)),
+          Text(subtitle,
+              style: const TextStyle(color: Colors.white24, fontSize: 11)),
           const SizedBox(height: 24),
           // Mock Chart Bars
           Row(
@@ -112,7 +129,7 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.r24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,8 +150,13 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 13, color: Colors.white70)),
-          Text(cost, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.greenAccent)),
+          Text(title,
+              style: const TextStyle(fontSize: 13, color: Colors.white70)),
+          Text(cost,
+              style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.greenAccent)),
         ],
       ),
     );
@@ -144,9 +166,9 @@ class InventoryAnalyticsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.orangeAccent.withOpacity(0.1),
+        color: Colors.orangeAccent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSizes.r24),
-        border: Border.all(color: Colors.orangeAccent.withOpacity(0.2)),
+        border: Border.all(color: Colors.orangeAccent.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -156,9 +178,16 @@ class InventoryAnalyticsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Colors.orangeAccent, letterSpacing: 1)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.orangeAccent,
+                        letterSpacing: 1)),
                 const SizedBox(height: 4),
-                Text(msg, style: const TextStyle(color: Colors.white70, fontSize: 13)),
+                Text(msg,
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 13)),
               ],
             ),
           ),
@@ -168,6 +197,11 @@ class InventoryAnalyticsScreen extends StatelessWidget {
   }
 
   Widget _buildSubtitle(String text) {
-    return Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.5, color: Colors.white38));
+    return Text(text,
+        style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.5,
+            color: Colors.white38));
   }
 }

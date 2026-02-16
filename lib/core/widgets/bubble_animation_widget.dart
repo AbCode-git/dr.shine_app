@@ -8,7 +8,8 @@ class BubbleAnimationWidget extends StatefulWidget {
   State<BubbleAnimationWidget> createState() => _BubbleAnimationWidgetState();
 }
 
-class _BubbleAnimationWidgetState extends State<BubbleAnimationWidget> with SingleTickerProviderStateMixin {
+class _BubbleAnimationWidgetState extends State<BubbleAnimationWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final List<Bubble> _bubbles = List.generate(15, (index) => Bubble());
   Offset _touchPosition = Offset.infinite;
@@ -34,7 +35,8 @@ class _BubbleAnimationWidgetState extends State<BubbleAnimationWidget> with Sing
       onHover: (event) => setState(() => _touchPosition = event.localPosition),
       onExit: (_) => setState(() => _touchPosition = Offset.infinite),
       child: GestureDetector(
-        onPanUpdate: (details) => setState(() => _touchPosition = details.localPosition),
+        onPanUpdate: (details) =>
+            setState(() => _touchPosition = details.localPosition),
         onPanEnd: (_) => setState(() => _touchPosition = Offset.infinite),
         child: AnimatedBuilder(
           animation: _controller,
@@ -108,18 +110,20 @@ class BubblePainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     for (var bubble in bubbles) {
-      paint.color = Colors.white.withOpacity(bubble.opacity);
-      
+      paint.color = Colors.white.withValues(alpha: bubble.opacity);
+
       // Draw outer circle
-      canvas.drawCircle(Offset(bubble.x % size.width, bubble.y), bubble.radius, paint);
-      
+      canvas.drawCircle(
+          Offset(bubble.x % size.width, bubble.y), bubble.radius, paint);
+
       // Draw inner shine (reflex)
       final shinePaint = Paint()
-        ..color = Colors.white.withOpacity(bubble.opacity * 0.5)
+        ..color = Colors.white.withValues(alpha: bubble.opacity * 0.5)
         ..style = PaintingStyle.fill;
-      
+
       canvas.drawCircle(
-        Offset((bubble.x % size.width) - bubble.radius * 0.3, bubble.y - bubble.radius * 0.3),
+        Offset((bubble.x % size.width) - bubble.radius * 0.3,
+            bubble.y - bubble.radius * 0.3),
         bubble.radius * 0.2,
         shinePaint,
       );

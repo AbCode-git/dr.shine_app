@@ -16,7 +16,8 @@ class ShimmerLoading extends StatefulWidget {
   State<ShimmerLoading> createState() => _ShimmerLoadingState();
 }
 
-class _ShimmerLoadingState extends State<ShimmerLoading> with SingleTickerProviderStateMixin {
+class _ShimmerLoadingState extends State<ShimmerLoading>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -41,6 +42,12 @@ class _ShimmerLoadingState extends State<ShimmerLoading> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    const baseColor = Color(0x0DFFFFFF); // Colors.white.withValues(alpha: 0.05)
+    const highlightColor =
+        Color(0x1AFFFFFF); // Colors.white.withValues(alpha: 0.1)
+    const accentColor =
+        Color(0x0DFFFFFF); // Colors.white.withValues(alpha: 0.05)
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -57,10 +64,10 @@ class _ShimmerLoadingState extends State<ShimmerLoading> with SingleTickerProvid
                 _animation.value,
                 _animation.value + 0.5,
               ],
-              colors: [
-                Colors.white.withOpacity(0.05),
-                Colors.white.withOpacity(0.1),
-                Colors.white.withOpacity(0.05),
+              colors: const [
+                baseColor,
+                highlightColor,
+                accentColor,
               ],
             ),
           ),

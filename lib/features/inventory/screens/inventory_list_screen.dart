@@ -13,7 +13,8 @@ class InventoryListScreen extends StatefulWidget {
   State<InventoryListScreen> createState() => _InventoryListScreenState();
 }
 
-class _InventoryListScreenState extends State<InventoryListScreen> with SingleTickerProviderStateMixin {
+class _InventoryListScreenState extends State<InventoryListScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -38,7 +39,8 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
         actions: [
           IconButton(
             icon: const Icon(Icons.analytics_outlined),
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.inventoryAnalytics),
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.inventoryAnalytics),
           ),
         ],
         bottom: TabBar(
@@ -64,7 +66,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           final items = snapshot.data ?? [];
           if (items.isEmpty) {
             return const Center(child: Text('No inventory items found.'));
@@ -74,8 +76,12 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
             controller: _tabController,
             children: [
               _buildInventoryList(items),
-              _buildInventoryList(items.where((i) => i.category == InventoryCategory.carWash).toList()),
-              _buildInventoryList(items.where((i) => i.category == InventoryCategory.oilChange).toList()),
+              _buildInventoryList(items
+                  .where((i) => i.category == InventoryCategory.carWash)
+                  .toList()),
+              _buildInventoryList(items
+                  .where((i) => i.category == InventoryCategory.oilChange)
+                  .toList()),
             ],
           );
         },
@@ -89,10 +95,10 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        final statusColor = item.currentStock <= item.minStockLevel 
-            ? Colors.redAccent 
-            : item.currentStock <= item.reorderLevel 
-                ? Colors.orangeAccent 
+        final statusColor = item.currentStock <= item.minStockLevel
+            ? Colors.redAccent
+            : item.currentStock <= item.reorderLevel
+                ? Colors.orangeAccent
                 : Colors.greenAccent;
 
         return Card(
@@ -100,22 +106,30 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
             leading: _buildStockIndicator(item, statusColor),
-            title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(item.name,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
-                Text('${item.category.name.toUpperCase()} • ${item.unit}', style: const TextStyle(fontSize: 12, color: Colors.white38)),
+                Text('${item.category.name.toUpperCase()} • ${item.unit}',
+                    style:
+                        const TextStyle(fontSize: 12, color: Colors.white38)),
                 if (item.viscosityGrade != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(item.viscosityGrade!, style: const TextStyle(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.bold)),
+                      child: Text(item.viscosityGrade!,
+                          style: const TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
               ],
@@ -124,11 +138,15 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${item.currentStock.toStringAsFixed(1)} ${item.unit}', style: TextStyle(fontWeight: FontWeight.bold, color: statusColor)),
-                const Text('Instock', style: TextStyle(fontSize: 10, color: Colors.white24)),
+                Text('${item.currentStock.toStringAsFixed(1)} ${item.unit}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: statusColor)),
+                const Text('Instock',
+                    style: TextStyle(fontSize: 10, color: Colors.white24)),
               ],
             ),
-            onTap: () => Navigator.pushNamed(context, AppRoutes.inventoryForm, arguments: item),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.inventoryForm,
+                arguments: item),
           ),
         );
       },
@@ -136,7 +154,8 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
   }
 
   Widget _buildStockIndicator(InventoryItem item, Color color) {
-    final progress = (item.currentStock / 100.0).clamp(0.0, 1.0); // Simplified scale for demo
+    final progress = (item.currentStock / 100.0)
+        .clamp(0.0, 1.0); // Simplified scale for demo
     return SizedBox(
       width: 40,
       height: 40,
@@ -149,7 +168,12 @@ class _InventoryListScreenState extends State<InventoryListScreen> with SingleTi
             valueColor: AlwaysStoppedAnimation<Color>(color),
             strokeWidth: 3,
           ),
-          Icon(item.category == InventoryCategory.oilChange ? Icons.oil_barrel : Icons.science, size: 16, color: color),
+          Icon(
+              item.category == InventoryCategory.oilChange
+                  ? Icons.oil_barrel
+                  : Icons.science,
+              size: 16,
+              color: color),
         ],
       ),
     );

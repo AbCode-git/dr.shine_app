@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
 import 'package:dr_shine_app/features/auth/screens/phone_input_screen.dart';
-import 'package:dr_shine_app/features/home/screens/customer_home_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/admin_dashboard_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/super_admin_dashboard_screen.dart';
 import 'package:dr_shine_app/features/auth/screens/pin_setup_screen.dart';
@@ -32,13 +31,35 @@ class HomeScreen extends StatelessWidget {
       return const PinSetupScreen();
     }
 
-    // 3. Route based on role
+    // 3. Route based on role (admin/super_admin only)
     if (user?.role == 'super_admin') {
       return const SuperAdminDashboardScreen();
     } else if (user?.role == 'admin') {
       return const AdminDashboardScreen();
     } else {
-      return const CustomerHomeScreen();
+      // No customer access - show error message
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.block, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
+                'Access Denied',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text('This app is for staff use only.'),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => authProvider.logout(),
+                child: const Text('Sign Out'),
+              ),
+            ],
+          ),
+        ),
+      );
     }
   }
 }

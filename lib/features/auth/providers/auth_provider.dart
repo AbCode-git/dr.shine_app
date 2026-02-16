@@ -1,94 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dr_shine_app/core/services/auth_service.dart';
 import 'package:dr_shine_app/features/auth/models/user_model.dart';
-import 'package:dr_shine_app/bootstrap.dart';
+import 'package:dr_shine_app/features/auth/repositories/auth_repository.dart';
+import 'package:dr_shine_app/core/services/logger_service.dart';
 import 'package:dr_shine_app/core/utils/mock_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-  
+  final IAuthRepository _authRepository;
+
   UserModel? _currentUser;
   bool _isLoading = false;
   bool _isInitialized = false;
   String? _verificationId;
-  String? _phoneNumber; // Store phone for mock role assignment
+  String? _phoneNumber;
 
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   bool get isInitialized => _isInitialized;
   bool get isAuthenticated => _currentUser != null;
 
-  AuthProvider() {
-    _authService.user.listen(_onAuthStateChanged);
+  AuthProvider(this._authRepository) {
+    _authRepository.authStateChanges.listen(_onAuthStateChanged);
     _checkMockSession();
   }
 
   Future<void> _checkMockSession() async {
-    if (!isFirebaseInitialized) {
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        final userData = prefs.getString('mock_user');
-        if (userData != null) {
-          try {
-            _currentUser = UserModel.fromMap(jsonDecode(userData));
-            notifyListeners();
-          } catch (e) {
-            debugPrint('Error loading mock session: $e');
-          }
-        }
-      } catch (e) {
-        debugPrint('Session persistence not ready: $e');
-        // This usually happens when a new plugin is added but the app needs a full restart.
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('mock_user');
+      if (userData != null) {
+        _currentUser = UserModel.fromMap(jsonDecode(userData));
       }
+    } catch (e) {
+      LoggerService.error('Error loading mock session', e);
+    } finally {
+      _isInitialized = true;
+      notifyListeners();
     }
-    _isInitialized = true;
-    notifyListeners();
   }
 
   Future<void> _persistMockSession(UserModel? user) async {
-    if (!isFirebaseInitialized) {
+    try {
       final prefs = await SharedPreferences.getInstance();
       if (user != null) {
         await prefs.setString('mock_user', jsonEncode(user.toMap()));
       } else {
         await prefs.remove('mock_user');
       }
+    } catch (e) {
+      LoggerService.error('Failed to persist session', e);
     }
   }
 
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
     if (firebaseUser == null) {
-      _currentUser = null;
+      if (_currentUser != null && _currentUser!.id.startsWith('mock_')) {
+        // Keep mock session if it exists
+      } else {
+        _currentUser = null;
+      }
     } else {
       _isLoading = true;
       notifyListeners();
-      _currentUser = await _authService.getUserData(firebaseUser.uid);
+      try {
+        _currentUser = await _authRepository.getUserData(firebaseUser.uid);
+      } catch (e) {
+        LoggerService.error('Failed to sync user data', e);
+      }
     }
     _isLoading = false;
     notifyListeners();
   }
 
   Future<void> verifyPhone(String phoneNumber) async {
-    _phoneNumber = phoneNumber; // Store for mock mode
+    _phoneNumber = phoneNumber;
     _isLoading = true;
     notifyListeners();
-    
-    await _authService.verifyPhone(
-      phoneNumber: phoneNumber,
-      onCodeSent: (verificationId) {
-        _verificationId = verificationId;
-        _isLoading = false;
-        notifyListeners();
-      },
-      onVerificationFailed: (e) {
-        _isLoading = false;
-        notifyListeners();
-        // Handle error in UI
-      },
-    );
+
+    try {
+      await _authRepository.verifyPhone(
+        phoneNumber: phoneNumber,
+        onCodeSent: (id) {
+          _verificationId = id;
+          _isLoading = false;
+          notifyListeners();
+        },
+        onVerificationFailed: (e) {
+          _isLoading = false;
+          notifyListeners();
+          LoggerService.error('Verification failed', e);
+        },
+      );
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      LoggerService.error('verifyPhone error', e);
+    }
   }
 
   Future<void> verifyOtp(String smsCode) async {
@@ -100,8 +109,8 @@ class AuthProvider extends ChangeNotifier {
     try {
       if (_verificationId == 'mock_verification_id') {
         await Future.delayed(const Duration(seconds: 1));
-        
-        // WHITELISTING LOGIC (MOCK)
+
+        // Whitelisting logic
         if (_phoneNumber != null && _phoneNumber!.endsWith('00')) {
           _currentUser = MockData.superAdminUser;
         } else if (_phoneNumber != null && _phoneNumber!.endsWith('44')) {
@@ -111,17 +120,18 @@ class AuthProvider extends ChangeNotifier {
         } else {
           _currentUser = MockData.newCustomerUser;
         }
-        
+
         await _persistMockSession(_currentUser);
         return;
       }
+
       final credential = PhoneAuthProvider.credential(
         verificationId: _verificationId!,
         smsCode: smsCode,
       );
-      await _authService.signInWithCredential(credential);
+      await _authRepository.signInWithCredential(credential);
     } catch (e) {
-      debugPrint('OTP verify error: $e');
+      LoggerService.error('OTP verify error', e);
       rethrow;
     } finally {
       _isLoading = false;
@@ -130,11 +140,13 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _authService.signOut();
-    if (!isFirebaseInitialized) {
+    try {
+      await _authRepository.signOut();
       _currentUser = null;
       await _persistMockSession(null);
       notifyListeners();
+    } catch (e) {
+      LoggerService.error('Logout failed', e);
     }
   }
 
@@ -144,19 +156,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.savePin(_currentUser!.id, pin);
-      // Update local user
-      _currentUser = UserModel(
-        id: _currentUser!.id,
-        phoneNumber: _currentUser!.phoneNumber,
-        displayName: _currentUser!.displayName,
-        role: _currentUser!.role,
-        pin: pin,
-        loyaltyPoints: _currentUser!.loyaltyPoints,
-        createdAt: _currentUser!.createdAt,
-      );
+      await _authRepository.savePin(_currentUser!.id, pin);
+      _currentUser = _currentUser!.copyWith(pin: pin);
       await _persistMockSession(_currentUser);
     } catch (e) {
+      LoggerService.error('PIN setup failed', e);
       rethrow;
     } finally {
       _isLoading = false;
@@ -169,8 +173,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Mock bypass for demo numbers
-      if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44') || phoneNumber.endsWith('55')) {
+      // Mock bypass
+      if (phoneNumber.endsWith('00') ||
+          phoneNumber.endsWith('44') ||
+          phoneNumber.endsWith('55')) {
         await Future.delayed(const Duration(seconds: 1));
         UserModel? user;
         if (phoneNumber.endsWith('00')) {
@@ -187,14 +193,9 @@ class AuthProvider extends ChangeNotifier {
           return true;
         }
       }
-
-      if (!isFirebaseInitialized) return false;
-      
-      // Real firebase logic would involve fetching user by phone first
-      // For now, in demo mode, we only support the mock numbers above.
-      return false; 
+      return false;
     } catch (e) {
-      debugPrint('PIN verify error: $e');
+      LoggerService.error('PIN verify error', e);
       return false;
     } finally {
       _isLoading = false;

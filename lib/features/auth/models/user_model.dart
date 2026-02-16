@@ -5,6 +5,7 @@ class UserModel {
   final String role; // 'customer' or 'admin'
   final String? pin; // 4-digit security code
   final int loyaltyPoints;
+  final bool isOnDuty;
   final DateTime createdAt;
 
   UserModel({
@@ -14,6 +15,7 @@ class UserModel {
     required this.role,
     this.pin,
     this.loyaltyPoints = 0,
+    this.isOnDuty = false,
     required this.createdAt,
   });
 
@@ -25,6 +27,7 @@ class UserModel {
       'role': role,
       'pin': pin,
       'loyaltyPoints': loyaltyPoints,
+      'isOnDuty': isOnDuty,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -37,9 +40,29 @@ class UserModel {
       role: map['role'] ?? 'customer',
       pin: map['pin'],
       loyaltyPoints: map['loyaltyPoints'] ?? 0,
-      createdAt: map['createdAt'] != null 
-          ? DateTime.parse(map['createdAt']) 
+      isOnDuty: map['isOnDuty'] ?? false,
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
           : DateTime.now(),
+    );
+  }
+
+  UserModel copyWith({
+    String? displayName,
+    String? phoneNumber,
+    bool? isOnDuty,
+    int? loyaltyPoints,
+    String? pin,
+  }) {
+    return UserModel(
+      id: id,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      displayName: displayName ?? this.displayName,
+      role: role,
+      pin: pin ?? this.pin,
+      loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
+      isOnDuty: isOnDuty ?? this.isOnDuty,
+      createdAt: createdAt,
     );
   }
 }

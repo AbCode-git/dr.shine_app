@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
+import 'package:dr_shine_app/app/app_routes.dart';
 import 'package:dr_shine_app/core/constants/app_strings.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/widgets/primary_button.dart';
@@ -54,13 +55,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 if (otp.length == 6) {
                   try {
                     await authProvider.verifyOtp(otp);
-                    if (mounted) {
-                      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                    if (context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, AppRoutes.home, (route) => false);
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Verification Failed: $e')),
-                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.toString())),
+                      );
+                    }
+                  } finally {
+                    // Optional: Any cleanup or final actions
                   }
                 }
               },

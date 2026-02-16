@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_shine_app/features/vehicle/models/vehicle_model.dart';
-import 'package:dr_shine_app/bootstrap.dart';
-import 'package:dr_shine_app/core/utils/mock_data.dart';
+import 'package:dr_shine_app/features/vehicle/repositories/vehicle_repository.dart';
+import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class VehicleProvider extends ChangeNotifier {
-  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  
+  final IVehicleRepository _repository;
+
   List<VehicleModel> _vehicles = [];
   bool _isLoading = false;
+
+  VehicleProvider(this._repository);
 
   List<VehicleModel> get vehicles => _vehicles;
   bool get isLoading => _isLoading;
@@ -19,19 +20,9 @@ class VehicleProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        _vehicles = [MockData.vehicles.first]; // Default mock vehicle
-        return;
-      }
-      final snapshot = await _firestore
-          .collection('vehicles')
-          .where('ownerId', isEqualTo: userId)
-          .get();
-      
-      _vehicles = snapshot.docs
-          .map((doc) => VehicleModel.fromMap(doc.data()))
-          .toList();
+      _vehicles = await _repository.getVehiclesForUser(userId);
+    } catch (e) {
+      LoggerService.error('Failed to fetch vehicles in provider', e);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -44,13 +35,11 @@ class VehicleProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        _vehicles.add(vehicle);
-        return;
-      }
-      await _firestore.collection('vehicles').doc(vehicle.id).set(vehicle.toMap());
+      await _repository.registerVehicle(vehicle);
       _vehicles.add(vehicle);
+    } catch (e) {
+      LoggerService.error('Vehicle registration failed', e);
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -59,18 +48,13 @@ class VehicleProvider extends ChangeNotifier {
 
   // Get specific vehicle by ID
   Future<VehicleModel?> getVehicleById(String vehicleId) async {
-    if (!isFirebaseInitialized) {
-      // Find in mock data or current list
-      try {
-        return MockData.vehicles.firstWhere((v) => v.id == vehicleId);
-      } catch (_) {
-        return _vehicles.cast<VehicleModel?>().firstWhere((v) => v?.id == vehicleId, orElse: () => null);
-      }
+    try {
+      // In a senior app, we might have a getVehicleById in repo,
+      // or we just find in the current list if already fetched.
+      return _vehicles.firstWhere((v) => v.id == vehicleId);
+    } catch (_) {
+      // If not found in local list, we could fetch from repo if needed
+      return null;
     }
-    final doc = await _firestore.collection('vehicles').doc(vehicleId).get();
-    if (doc.exists) {
-      return VehicleModel.fromMap(doc.data()!);
-    }
-    return null;
   }
 }

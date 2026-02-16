@@ -1,7 +1,5 @@
 import 'package:dr_shine_app/features/auth/models/user_model.dart';
 import 'package:dr_shine_app/features/vehicle/models/vehicle_model.dart';
-import 'package:dr_shine_app/shared/models/service_model.dart';
-import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
 class MockData {
   static final adminUser = UserModel(

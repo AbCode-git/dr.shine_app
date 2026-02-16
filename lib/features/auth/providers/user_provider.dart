@@ -1,99 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_shine_app/features/auth/models/user_model.dart';
-import 'package:dr_shine_app/bootstrap.dart';
-import 'package:dr_shine_app/core/utils/mock_data.dart';
+import 'package:dr_shine_app/features/auth/repositories/user_repository.dart';
+import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class UserProvider extends ChangeNotifier {
-  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  
+  final IUserRepository _repository;
+
   List<UserModel> _allUsers = [];
   bool _isLoading = false;
+
+  UserProvider(this._repository);
 
   List<UserModel> get allUsers => _allUsers;
   bool get isLoading => _isLoading;
 
-  List<UserModel> get staff => _allUsers.where((u) => u.role == 'admin').toList();
-  List<UserModel> get customers => _allUsers.where((u) => u.role == 'customer').toList();
+  List<UserModel> get staff =>
+      _allUsers.where((u) => u.role == 'admin').toList();
+  List<UserModel> get customers =>
+      _allUsers.where((u) => u.role == 'customer').toList();
 
   Future<void> fetchUsers() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        _allUsers = [
-          MockData.adminUser,
-          MockData.customerUser,
-          MockData.superAdminUser,
-          UserModel(
-            id: 'staff_1',
-            phoneNumber: '+251911111111',
-            displayName: 'John Staff',
-            role: 'admin',
-            createdAt: DateTime.now(),
-          ),
-          UserModel(
-            id: 'customer_2',
-            phoneNumber: '+251922222222',
-            displayName: 'Jane Doe',
-            role: 'customer',
-            loyaltyPoints: 5,
-            createdAt: DateTime.now(),
-          ),
-        ];
-      } else {
-        final snapshot = await _firestore.collection('users').get();
-        _allUsers = snapshot.docs.map((doc) => UserModel.fromMap(doc.data())).toList();
-      }
+      _allUsers = await _repository.fetchAllUsers();
     } catch (e) {
-      debugPrint('Error fetching users: $e');
+      LoggerService.error('Error fetching users in provider', e);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> createUser(UserModel user) async {
-    if (!isFirebaseInitialized) {
-      _allUsers.insert(0, user);
-      notifyListeners();
-      return;
+    try {
+      await _repository.createUser(user);
+      await fetchUsers();
+    } catch (e) {
+      LoggerService.error('User creation failed', e);
+      rethrow;
     }
-    await _firestore.collection('users').doc(user.id).set(user.toMap());
-    await fetchUsers();
   }
 
-  Future<void> updateUserDetails(String userId, {String? displayName, String? phoneNumber, String? role, int? loyaltyPoints}) async {
-    if (!isFirebaseInitialized) {
-      final index = _allUsers.indexWhere((u) => u.id == userId);
-      if (index != -1) {
-        final user = _allUsers[index];
-        _allUsers[index] = UserModel(
-          id: user.id,
-          phoneNumber: phoneNumber ?? user.phoneNumber,
-          displayName: displayName ?? user.displayName,
-          role: role ?? user.role,
-          loyaltyPoints: loyaltyPoints ?? user.loyaltyPoints,
-          createdAt: user.createdAt,
-        );
-        notifyListeners();
-      }
-      return;
+  Future<void> updateUserDetails(String userId,
+      {String? displayName, String? phoneNumber, bool? isOnDuty}) async {
+    try {
+      await _repository.updateUserDetails(userId,
+          displayName: displayName,
+          phoneNumber: phoneNumber,
+          isOnDuty: isOnDuty);
+      await fetchUsers();
+    } catch (e) {
+      LoggerService.error('User update failed', e);
+      rethrow;
     }
-    
-    final updates = <String, dynamic>{};
-    if (displayName != null) updates['displayName'] = displayName;
-    if (phoneNumber != null) updates['phoneNumber'] = phoneNumber;
-    if (role != null) updates['role'] = role;
-    if (loyaltyPoints != null) updates['loyaltyPoints'] = loyaltyPoints;
-
-    await _firestore.collection('users').doc(userId).update(updates);
-    await fetchUsers();
   }
 
-  Future<void> updateUserRole(String userId, String newRole) async {
-    await updateUserDetails(userId, role: newRole);
+  Future<void> updateOnDuty(String userId, bool isOnDuty) async {
+    await updateUserDetails(userId, isOnDuty: isOnDuty);
   }
 }

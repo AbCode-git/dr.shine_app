@@ -52,17 +52,21 @@ class _DutyRosterScreenState extends State<DutyRosterScreen> {
                     return Card(
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: isOnDuty ? AppColors.success.withOpacity(0.1) : Colors.white10,
+                          backgroundColor: isOnDuty
+                              ? AppColors.success.withValues(alpha: 0.1)
+                              : Colors.white10,
                           child: Icon(
                             Icons.person,
-                            color: isOnDuty ? AppColors.success : Colors.white38,
+                            color:
+                                isOnDuty ? AppColors.success : Colors.white38,
                           ),
                         ),
                         title: Text(member.displayName ?? 'Staff member'),
                         subtitle: Text(
                           isOnDuty ? 'ON DUTY' : 'OFF DUTY',
                           style: TextStyle(
-                            color: isOnDuty ? AppColors.success : Colors.white38,
+                            color:
+                                isOnDuty ? AppColors.success : Colors.white38,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
@@ -70,7 +74,7 @@ class _DutyRosterScreenState extends State<DutyRosterScreen> {
                         ),
                         trailing: Switch(
                           value: isOnDuty,
-                          activeColor: AppColors.success,
+                          activeThumbColor: AppColors.success,
                           onChanged: (val) {
                             setState(() {
                               _onDutyStatus[member.id] = val;

@@ -45,7 +45,9 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCEL')),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('UPDATE RULES'),
@@ -90,28 +92,35 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
       childAspectRatio: 1.5,
       children: [
         _buildMetricCard('Total Points', '12,450', Icons.stars, Colors.orange),
-        _buildMetricCard('Redeemed', '2,100', Icons.card_giftcard, Colors.green),
-        _buildMetricCard('Active Users', '142', Icons.people, AppColors.primary),
+        _buildMetricCard(
+            'Redeemed', '2,100', Icons.card_giftcard, Colors.green),
+        _buildMetricCard(
+            'Active Users', '142', Icons.people, AppColors.primary),
         _buildMetricCard('Avg per User', '87', Icons.analytics, Colors.purple),
       ],
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.r20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 20),
           const Spacer(),
-          Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Text(title, style: const TextStyle(fontSize: 10, color: Colors.white24, letterSpacing: 1)),
+          Text(value,
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(title,
+              style: const TextStyle(
+                  fontSize: 10, color: Colors.white24, letterSpacing: 1)),
         ],
       ),
     );
@@ -143,16 +152,18 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               child: Text(
                 (topCustomers.indexOf(customer) + 1).toString(),
-                style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: AppColors.primary, fontWeight: FontWeight.bold),
               ),
             ),
             title: Text(customer['name'] as String),
             trailing: Text(
               '${customer['points']} Pts',
-              style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.orange, fontWeight: FontWeight.bold),
             ),
           ),
         );

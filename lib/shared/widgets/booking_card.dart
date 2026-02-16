@@ -45,13 +45,15 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Text(
                       serviceName,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     _buildStatusBadge(booking.status),
                   ],
                 ),
                 const SizedBox(height: AppSizes.p8),
-                Text(vehicleInfo, style: const TextStyle(color: AppColors.textSecondary)),
+                Text(vehicleInfo,
+                    style: const TextStyle(color: AppColors.textSecondary)),
                 const Divider(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,13 +98,14 @@ class BookingCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: color),
       ),
       child: Text(
         status.toUpperCase(),
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style:
+            TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }

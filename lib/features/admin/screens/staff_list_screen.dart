@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/auth/models/user_model.dart';
-import 'package:dr_shine_app/core/widgets/primary_button.dart';
 import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
@@ -61,9 +60,13 @@ class _StaffListScreenState extends State<StaffListScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (nameController.text.isEmpty || phoneController.text.isEmpty) return;
-
               final userProvider = context.read<UserProvider>();
+              final navigator = Navigator.of(context);
+
+              if (nameController.text.isEmpty || phoneController.text.isEmpty) {
+                return;
+              }
+
               if (isEditing) {
                 await userProvider.updateUserDetails(
                   staff.id,
@@ -80,7 +83,10 @@ class _StaffListScreenState extends State<StaffListScreen> {
                 );
                 await userProvider.createUser(newUser);
               }
-              if (mounted) Navigator.pop(context);
+
+              if (mounted) {
+                navigator.pop();
+              }
             },
             child: Text(isEditing ? 'Update' : 'Add Staff'),
           ),
@@ -111,7 +117,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
                 return Card(
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.primary.withOpacity(0.1),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       child: const Icon(Icons.person, color: AppColors.primary),
                     ),
                     title: Text(staff.displayName ?? 'Staff member'),
@@ -124,7 +130,8 @@ class _StaffListScreenState extends State<StaffListScreen> {
                           backgroundColor: AppColors.primary,
                         ),
                         IconButton(
-                          icon: const Icon(Icons.edit, size: 20, color: Colors.white38),
+                          icon: const Icon(Icons.edit,
+                              size: 20, color: Colors.white38),
                           onPressed: () => _showStaffDialog(staff: staff),
                         ),
                       ],

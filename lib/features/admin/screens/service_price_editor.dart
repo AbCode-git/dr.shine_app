@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dr_shine_app/shared/models/service_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
-import 'package:dr_shine_app/core/widgets/primary_button.dart';
 
 class ServicePriceEditor extends StatefulWidget {
   const ServicePriceEditor({super.key});
@@ -24,7 +23,8 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
   void _editService(int index) {
     final service = _services[index];
     final nameController = TextEditingController(text: service.name);
-    final priceController = TextEditingController(text: service.price.toInt().toString());
+    final priceController =
+        TextEditingController(text: service.price.toInt().toString());
 
     showDialog(
       context: context,
@@ -101,8 +101,10 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
           ),
           ElevatedButton(
             onPressed: () {
-              if (nameController.text.isEmpty || priceController.text.isEmpty) return;
-              
+              if (nameController.text.isEmpty || priceController.text.isEmpty) {
+                return;
+              }
+
               setState(() {
                 final newService = ServiceModel(
                   id: 'service_${DateTime.now().millisecondsSinceEpoch}',
@@ -159,10 +161,11 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                         _activeStatus[service.id] = val;
                       });
                     },
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit, size: 20, color: Colors.white38),
+                    icon:
+                        const Icon(Icons.edit, size: 20, color: Colors.white38),
                     onPressed: () => _editService(index),
                   ),
                 ],

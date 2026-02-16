@@ -1,0 +1,14 @@
+Analyzing dr_shine_restructured...                              
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\primary_button.dart:73:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\admin\screens\admin_dashboard_screen.dart:168:21 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\admin\screens\super_admin_dashboard_screen.dart:192:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\admin\screens\super_admin_dashboard_screen.dart:255:48 - deprecated_member_use
+   info - Unnecessary use of 'toList' in a spread - lib\features\admin\screens\wash_reports_screen.dart:303:14 - unnecessary_to_list_in_spreads
+   info - Unnecessary use of 'toList' in a spread - lib\features\admin\screens\wash_reports_screen.dart:487:14 - unnecessary_to_list_in_spreads
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\booking\screens\booking_details_screen.dart:138:22 - deprecated_member_use
+   info - Statements in an if should be enclosed in a block - lib\features\inventory\screens\inventory_item_form_screen.dart:176:11 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\inventory\screens\inventory_item_form_screen.dart:181:11 - curly_braces_in_flow_control_structures
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\service_card.dart:28:37 - deprecated_member_use
+
+10 issues found. (ran in 4.8s)

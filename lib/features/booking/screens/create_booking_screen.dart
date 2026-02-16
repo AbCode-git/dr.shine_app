@@ -11,6 +11,7 @@ import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/widgets/primary_button.dart';
 import 'package:dr_shine_app/shared/widgets/service_card.dart';
+import 'package:dr_shine_app/app/app_routes.dart';
 
 class CreateBookingScreen extends StatefulWidget {
   final ServiceModel? initialService;
@@ -32,7 +33,9 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
     _selectedService = widget.initialService;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = context.read<AuthProvider>();
-      context.read<VehicleProvider>().fetchVehicles(authProvider.currentUser!.id);
+      context
+          .read<VehicleProvider>()
+          .fetchVehicles(authProvider.currentUser!.id);
     });
   }
 
@@ -49,23 +52,23 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Select Your Vehicle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Select Your Vehicle',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: AppSizes.p8),
             if (vehicleProvider.vehicles.isEmpty)
               _buildAddVehicleCta(context)
             else
               _buildVehicleSelector(vehicleProvider.vehicles),
-            
             const SizedBox(height: AppSizes.p24),
-            const Text('Select Service', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Select Service',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: AppSizes.p8),
             _buildServiceSelector(),
-
             const SizedBox(height: AppSizes.p24),
-            const Text('Select Day', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Select Day',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: AppSizes.p8),
             _buildDateSelector(),
-
             const SizedBox(height: AppSizes.p32),
             PrimaryButton(
               text: 'Book Now',
@@ -82,12 +85,18 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
                         createdAt: DateTime.now(),
                         price: _selectedService!.price,
                       );
+
+                      final messenger = ScaffoldMessenger.of(context);
+                      final navigator = Navigator.of(context);
+
                       await bookingProvider.createBooking(booking);
+
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Booking request submitted!')),
+                        messenger.showSnackBar(
+                          const SnackBar(
+                              content: Text('Booking request submitted!')),
                         );
-                        Navigator.pop(context);
+                        navigator.pop();
                       }
                     }
                   : null,
@@ -100,7 +109,7 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
 
   Widget _buildAddVehicleCta(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/register-vehicle'),
+      onTap: () => Navigator.pushNamed(context, AppRoutes.registerVehicle),
       child: Container(
         padding: const EdgeInsets.all(AppSizes.p16),
         decoration: BoxDecoration(
@@ -113,7 +122,8 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
           children: [
             Icon(Icons.add, color: AppColors.primary),
             SizedBox(width: 8),
-            Text('No vehicles registered. Add one now.', style: TextStyle(color: AppColors.primary)),
+            Text('No vehicles registered. Add one now.',
+                style: TextStyle(color: AppColors.primary)),
           ],
         ),
       ),
@@ -128,7 +138,8 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
         return ChoiceChip(
           label: Text('${v.nickname ?? v.type} (${v.plateNumber})'),
           selected: isSelected,
-          onSelected: (selected) => setState(() => _selectedVehicle = selected ? v : null),
+          onSelected: (selected) =>
+              setState(() => _selectedVehicle = selected ? v : null),
         );
       }).toList(),
     );
@@ -144,7 +155,7 @@ class _CreateBookingScreenState extends State<CreateBookingScreen> {
         itemBuilder: (context, index) {
           final service = defaultServices[index];
           final isSelected = _selectedService?.id == service.id;
-          
+
           return SizedBox(
             width: 200,
             child: ServiceCard(

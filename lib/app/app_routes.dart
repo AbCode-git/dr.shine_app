@@ -5,12 +5,13 @@ import 'package:dr_shine_app/features/vehicle/screens/vehicle_list_screen.dart';
 import 'package:dr_shine_app/features/vehicle/screens/add_vehicle_screen.dart';
 import 'package:dr_shine_app/features/booking/screens/booking_list_screen.dart';
 import 'package:dr_shine_app/features/booking/screens/create_booking_screen.dart';
+import 'package:dr_shine_app/features/booking/screens/quick_entry_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/admin_dashboard_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/wash_reports_screen.dart';
 import 'package:dr_shine_app/features/location/screens/location_screen.dart';
 import 'package:dr_shine_app/features/loyalty/screens/loyalty_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/super_admin_dashboard_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/staff_list_screen.dart';
-import 'package:dr_shine_app/features/admin/screens/customer_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/service_price_editor.dart';
 import 'package:dr_shine_app/features/booking/screens/booking_details_screen.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
@@ -38,7 +39,6 @@ class AppRoutes {
   static const String admin = '/admin';
   static const String superAdmin = '/super-admin';
   static const String staffManagement = '/staff-management';
-  static const String customerDirectory = '/customer-directory';
   static const String servicePricing = '/service-pricing';
   static const String loyalty = '/loyalty';
   static const String location = '/location';
@@ -53,6 +53,8 @@ class AppRoutes {
   static const String appConfig = '/app-config';
   static const String feedbackList = '/feedback-list';
   static const String loyaltyAnalytics = '/loyalty-analytics';
+  static const String quickEntry = '/quick-entry';
+  static const String washReports = '/wash-reports';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -80,11 +82,10 @@ class AppRoutes {
       case admin:
         return MaterialPageRoute(builder: (_) => const AdminDashboardScreen());
       case superAdmin:
-        return MaterialPageRoute(builder: (_) => const SuperAdminDashboardScreen());
+        return MaterialPageRoute(
+            builder: (_) => const SuperAdminDashboardScreen());
       case staffManagement:
         return MaterialPageRoute(builder: (_) => const StaffListScreen());
-      case customerDirectory:
-        return MaterialPageRoute(builder: (_) => const CustomerListScreen());
       case servicePricing:
         return MaterialPageRoute(builder: (_) => const ServicePriceEditor());
       case loyalty:
@@ -95,26 +96,35 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const PinSetupScreen());
       case pinLogin:
         final phone = settings.arguments as String? ?? '';
-        return MaterialPageRoute(builder: (_) => PinLoginScreen(phoneNumber: phone));
+        return MaterialPageRoute(
+            builder: (_) => PinLoginScreen(phoneNumber: phone));
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case inventory:
         return MaterialPageRoute(builder: (_) => const InventoryListScreen());
       case inventoryForm:
         final item = settings.arguments as InventoryItem?;
-        return MaterialPageRoute(builder: (_) => InventoryItemFormScreen(item: item));
+        return MaterialPageRoute(
+            builder: (_) => InventoryItemFormScreen(item: item));
       case inventoryAnalytics:
-        return MaterialPageRoute(builder: (_) => const InventoryAnalyticsScreen());
+        return MaterialPageRoute(
+            builder: (_) => const InventoryAnalyticsScreen());
       case dutyRoster:
         return MaterialPageRoute(builder: (_) => const DutyRosterScreen());
       case performanceAnalytics:
-        return MaterialPageRoute(builder: (_) => const PerformanceAnalyticsScreen());
+        return MaterialPageRoute(
+            builder: (_) => const PerformanceAnalyticsScreen());
       case appConfig:
         return MaterialPageRoute(builder: (_) => const AppConfigScreen());
       case feedbackList:
         return MaterialPageRoute(builder: (_) => const FeedbackListScreen());
       case loyaltyAnalytics:
-        return MaterialPageRoute(builder: (_) => const LoyaltyAnalyticsScreen());
+        return MaterialPageRoute(
+            builder: (_) => const LoyaltyAnalyticsScreen());
+      case quickEntry:
+        return MaterialPageRoute(builder: (_) => const QuickEntryScreen());
+      case washReports:
+        return MaterialPageRoute(builder: (_) => const WashReportsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

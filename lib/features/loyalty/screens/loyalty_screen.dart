@@ -12,7 +12,7 @@ class LoyaltyScreen extends StatelessWidget {
     final authProvider = context.watch<AuthProvider>();
     final user = authProvider.currentUser;
     final points = user?.loyaltyPoints ?? 0;
-    
+
     // Simple logic: 5 points = 1 free wash
 
     return Scaffold(
@@ -26,14 +26,17 @@ class LoyaltyScreen extends StatelessWidget {
               padding: const EdgeInsets.all(AppSizes.p24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withValues(alpha: 0.7)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(AppSizes.r16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -57,7 +60,8 @@ class LoyaltyScreen extends StatelessWidget {
                           ),
                           Text(
                             'Loyalty Member',
-                            style: TextStyle(color: Colors.white70, fontSize: 12),
+                            style:
+                                TextStyle(color: Colors.white70, fontSize: 12),
                           ),
                         ],
                       ),
@@ -86,19 +90,22 @@ class LoyaltyScreen extends StatelessWidget {
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
-                              color: isFilled ? Colors.white : Colors.transparent,
+                              color:
+                                  isFilled ? Colors.white : Colors.transparent,
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 2),
                             ),
                             child: Icon(
                               isFilled ? Icons.check : Icons.star_border,
-                              color: isFilled ? AppColors.primary : Colors.white,
+                              color:
+                                  isFilled ? AppColors.primary : Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             '${index + 1}',
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
                           ),
                         ],
                       );
@@ -123,7 +130,7 @@ class LoyaltyScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSizes.p16),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withOpacity(0.1),
+                  color: AppColors.success.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSizes.r12),
                   border: Border.all(color: AppColors.success),
                 ),

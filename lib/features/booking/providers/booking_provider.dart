@@ -1,43 +1,35 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
-import 'package:dr_shine_app/bootstrap.dart';
+import 'package:dr_shine_app/features/booking/repositories/booking_repository.dart';
+import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class BookingProvider extends ChangeNotifier {
-  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  
+  final IBookingRepository _repository;
+
   final List<BookingModel> _bookings = [];
   bool _isLoading = false;
-  
-  // For reactive mock updates
-  StreamController<List<BookingModel>>? _mockStreamController;
+  StreamSubscription? _bookingsSubscription;
 
-  BookingProvider() {
-    if (!isFirebaseInitialized) {
-      _bookings.addAll([
-        BookingModel(
-          id: 'b1',
-          userId: 'customer_456',
-          vehicleId: 'v1',
-          serviceId: 'interior',
-          status: 'pending',
-          bookingDate: DateTime.now(),
-          createdAt: DateTime.now(),
-          price: 500,
-        ),
-        BookingModel(
-          id: 'b2',
-          userId: 'customer_555',
-          vehicleId: 'v1',
-          serviceId: 'full_wash',
-          status: 'washing',
-          bookingDate: DateTime.now(),
-          createdAt: DateTime.now(),
-          price: 1200,
-        ),
-      ]);
-    }
+  BookingProvider(this._repository) {
+    _init();
+  }
+
+  void _init() {
+    // Listen to today's bookings by default to keep local list updated
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    _bookingsSubscription =
+        _repository.getBookingsByDateRange(startOfDay, endOfDay).listen(
+      (list) {
+        _bookings.clear();
+        _bookings.addAll(list);
+        notifyListeners();
+      },
+      onError: (e) => LoggerService.error('BookingProvider stream error', e),
+    );
   }
 
   List<BookingModel> get bookings => _bookings;
@@ -45,26 +37,16 @@ class BookingProvider extends ChangeNotifier {
 
   // Stream today's bookings (for admin)
   Stream<List<BookingModel>> getTodayBookings() {
-    if (!isFirebaseInitialized) {
-      _mockStreamController ??= StreamController<List<BookingModel>>.broadcast();
-      // Initial push
-      Future.delayed(Duration.zero, () {
-        _mockStreamController?.add(List.from(_bookings));
-      });
-      return _mockStreamController!.stream;
-    }
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
+    return getBookingsByDateRange(startOfDay, endOfDay);
+  }
 
-    return _firestore
-        .collection('bookings')
-        .where('bookingDate', isGreaterThanOrEqualTo: startOfDay.toIso8601String())
-        .where('bookingDate', isLessThan: endOfDay.toIso8601String())
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => BookingModel.fromMap(doc.data()))
-            .toList());
+  // Stream bookings by date range
+  Stream<List<BookingModel>> getBookingsByDateRange(
+      DateTime start, DateTime end) {
+    return _repository.getBookingsByDateRange(start, end);
   }
 
   // Create booking
@@ -73,13 +55,11 @@ class BookingProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isFirebaseInitialized) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        _bookings.add(booking);
-        _mockStreamController?.add(List.from(_bookings));
-        return;
-      }
-      await _firestore.collection('bookings').doc(booking.id).set(booking.toMap());
+      await _repository.createBooking(booking);
+      LoggerService.info('Booking created successfully');
+    } catch (e) {
+      LoggerService.error('Failed to create booking in provider', e);
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -88,76 +68,27 @@ class BookingProvider extends ChangeNotifier {
 
   // Update booking status
   Future<void> updateBookingStatus(String id, String status) async {
-    if (!isFirebaseInitialized) {
-      final index = _bookings.indexWhere((b) => b.id == id);
-      if (index != -1) {
-        final b = _bookings[index];
-        _bookings[index] = BookingModel(
-          id: b.id,
-          userId: b.userId,
-          vehicleId: b.vehicleId,
-          serviceId: b.serviceId,
-          status: status,
-          bookingDate: b.bookingDate,
-          createdAt: b.createdAt,
-          price: b.price,
-        );
-        _mockStreamController?.add(List.from(_bookings));
-        notifyListeners();
-      }
-      return;
+    try {
+      await _repository.updateBookingStatus(id, status);
+    } catch (e) {
+      LoggerService.error('Status update failed', e);
+      rethrow;
     }
-    await _firestore.collection('bookings').doc(id).update({'status': status});
   }
 
-  // Complete wash and add loyalty point
-  Future<void> completeWash(BookingModel booking, {Map<String, double> requirements = const {}}) async {
-    if (!isFirebaseInitialized) {
-      await updateBookingStatus(booking.id, 'completed');
-      return;
+  // Complete wash
+  Future<void> completeWash(BookingModel booking) async {
+    try {
+      await _repository.completeWash(booking);
+    } catch (e) {
+      LoggerService.error('Wash completion failed', e);
+      rethrow;
     }
-    final batch = _firestore.batch();
-    
-    // Update booking status
-    final bookingRef = _firestore.collection('bookings').doc(booking.id);
-    batch.update(bookingRef, {'status': 'completed'});
-    
-    // Increment user loyalty points
-    final userRef = _firestore.collection('users').doc(booking.userId);
-    batch.update(userRef, {'loyaltyPoints': FieldValue.increment(1)});
-    await batch.commit();
   }
 
   @override
   void dispose() {
-    _mockStreamController?.close();
+    _bookingsSubscription?.cancel();
     super.dispose();
-  }
-
-  // Listen to user bookings and trigger notifications (simulated)
-  void listenToUserBookings(String userId, Function(String title, String body) onNotify) {
-    if (!isFirebaseInitialized) {
-      // Mock logic: listen to local stream
-      getTodayBookings().listen((list) {
-        // This is simplified for demo; in real app it tracks changes
-      });
-      return;
-    }
-    _firestore
-        .collection('bookings')
-        .where('userId', isEqualTo: userId)
-        .snapshots()
-        .listen((snapshot) {
-      for (var change in snapshot.docChanges) {
-        if (change.type == DocumentChangeType.modified) {
-          final booking = BookingModel.fromMap(change.doc.data()!);
-          if (booking.status == 'accepted') {
-            onNotify('Booking Accepted!', 'Your car wash has been scheduled.');
-          } else if (booking.status == 'completed') {
-            onNotify('Car Ready!', 'Your car wash is complete. You earned 1 loyalty point!');
-          }
-        }
-      }
-    });
   }
 }

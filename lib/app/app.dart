@@ -8,6 +8,7 @@ import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
 import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
 import 'package:dr_shine_app/app/app_theme.dart';
+import 'package:dr_shine_app/core/services/service_locator.dart';
 
 class DrShineApp extends StatelessWidget {
   const DrShineApp({super.key});
@@ -16,12 +17,18 @@ class DrShineApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => VehicleProvider()),
-        ChangeNotifierProvider(create: (_) => BookingProvider()),
-        ChangeNotifierProvider(create: (_) => StatusProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => InventoryProvider()),
+        ChangeNotifierProvider(
+            create: (_) => AuthProvider(locator.authRepository)),
+        ChangeNotifierProvider(
+            create: (_) => VehicleProvider(locator.vehicleRepository)),
+        ChangeNotifierProvider(
+            create: (_) => BookingProvider(locator.bookingRepository)),
+        ChangeNotifierProvider(
+            create: (_) => StatusProvider(locator.statusRepository)),
+        ChangeNotifierProvider(
+            create: (_) => UserProvider(locator.userRepository)),
+        ChangeNotifierProvider(
+            create: (_) => InventoryProvider(locator.inventoryRepository)),
       ],
       child: MaterialApp(
         title: 'Dr. Shine Car Wash',

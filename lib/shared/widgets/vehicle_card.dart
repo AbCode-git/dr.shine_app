@@ -22,7 +22,7 @@ class VehicleCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSizes.p12),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.directions_car, color: AppColors.primary),
@@ -34,7 +34,8 @@ class VehicleCard extends StatelessWidget {
                 children: [
                   Text(
                     vehicle.nickname ?? vehicle.type,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Text(

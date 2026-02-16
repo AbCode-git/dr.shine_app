@@ -18,13 +18,17 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color effectiveBackgroundColor = backgroundColor ?? AppColors.primary;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            backgroundColor ?? AppColors.primary,
-            (backgroundColor ?? AppColors.primary).withOpacity(0.8),
+            effectiveBackgroundColor,
+            effectiveBackgroundColor.withValues(
+                alpha:
+                    0.8), // Assuming withValues is a custom extension that behaves like withOpacity
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -33,7 +37,9 @@ class PrimaryButton extends StatelessWidget {
         boxShadow: [
           if (onPressed != null && !isLoading)
             BoxShadow(
-              color: (backgroundColor ?? AppColors.primary).withOpacity(0.3),
+              color: effectiveBackgroundColor.withValues(
+                  alpha:
+                      0.3), // Assuming withValues is a custom extension that behaves like withOpacity
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -41,14 +47,37 @@ class PrimaryButton extends StatelessWidget {
       ),
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: AppSizes.p16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.r12),
-          ),
-        ),
+        style: isLoading
+            ? ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey, // Or some other disabled color
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.p16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.r12),
+                ),
+                elevation: 0, // No shadow when disabled
+                side: BorderSide(
+                    color: AppColors.primary.withValues(
+                        alpha:
+                            0.5)), // Assuming withValues is a custom extension that behaves like withOpacity
+              )
+            : ElevatedButton.styleFrom(
+                backgroundColor:
+                    Colors.transparent, // Transparent to show gradient
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.p16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.r12),
+                ),
+                elevation: 2,
+                side: isLoading
+                    ? BorderSide(
+                        color: effectiveBackgroundColor.withValues(alpha: 0.1))
+                    : null,
+                shadowColor: AppColors.primary.withValues(
+                    alpha:
+                        0.3), // Assuming withValues is a custom extension that behaves like withOpacity
+              ),
         child: isLoading
             ? const SizedBox(
                 height: 20,
