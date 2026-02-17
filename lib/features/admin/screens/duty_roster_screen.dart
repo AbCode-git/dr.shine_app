@@ -74,7 +74,7 @@ class _DutyRosterScreenState extends State<DutyRosterScreen> {
                         ),
                         trailing: Switch(
                           value: isOnDuty,
-                          activeThumbColor: AppColors.success,
+                          activeColor: AppColors.success,
                           onChanged: (val) {
                             setState(() {
                               _onDutyStatus[member.id] = val;

@@ -161,7 +161,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                         _activeStatus[service.id] = val;
                       });
                     },
-                    activeThumbColor: AppColors.primary,
+                    activeColor: AppColors.primary,
                   ),
                   IconButton(
                     icon:

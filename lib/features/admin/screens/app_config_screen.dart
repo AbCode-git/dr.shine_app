@@ -160,7 +160,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
         secondary: Icon(icon, color: AppColors.primary),
         value: value,
         onChanged: onChanged,
-        activeThumbColor: AppColors.primary,
+        activeColor: AppColors.primary,
       ),
     );
   }
