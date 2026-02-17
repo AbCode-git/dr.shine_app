@@ -115,10 +115,12 @@ ON CONFLICT DO NOTHING;
 To complete the test setup:
 
 1. Go to Supabase Dashboard > Authentication > Add User
-2. Create users with these virtual emails:
-   - +251911234567@drshine.app (password: any, we use PIN auth)
-   - +251922345678@drshine.app
-   - +251933456789@drshine.app
+2. Create users with these virtual emails AND passwords:
+   - Email: +251911234567@drshine.app | Password: 1111
+   - Email: +251922345678@drshine.app | Password: 2222
+   - Email: +251933456789@drshine.app | Password: 3333
+
+Note: The password in Supabase Auth should be the same as the 4-digit PIN.
 
 3. Copy their UUIDs and update the profiles INSERT above
 4. Run the updated INSERT statements

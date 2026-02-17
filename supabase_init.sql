@@ -108,9 +108,14 @@ CREATE POLICY "Super admins can delete tenants" ON tenants
 
 -- 9. RLS Policies for Operational Tables
 
--- Profiles: Users can see profiles in their own tenant
-CREATE POLICY "Tenant isolation for profiles" ON profiles
-    FOR ALL USING (tenant_id = get_user_tenant_id());
+-- Profiles: Users can see their own profile OR profiles in their own tenant
+-- Note: Using a subquery for tenant_id lookup to avoid recursive policy evaluation
+CREATE POLICY "Profiles access" ON profiles
+    FOR ALL USING (
+        id = auth.uid() 
+        OR 
+        tenant_id = (SELECT tenant_id FROM profiles WHERE id = auth.uid())
+    );
 
 -- Bookings: Users can see/modify bookings in their own tenant
 CREATE POLICY "Tenant isolation for bookings" ON bookings
