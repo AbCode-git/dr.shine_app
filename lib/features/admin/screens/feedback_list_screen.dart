@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
 class FeedbackListScreen extends StatelessWidget {
@@ -36,90 +37,116 @@ class FeedbackListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Customer Feedback')),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(AppSizes.p20),
-        itemCount: mockFeedback.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-          final fb = mockFeedback[index];
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(fb['user'] as String,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(fb['date'] as String,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.white24)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: List.generate(5, (i) {
-                      return Icon(
-                        Icons.star,
-                        size: 16,
-                        color: i < (fb['rating'] as int)
-                            ? Colors.orange
-                            : Colors.white12,
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    fb['comment'] as String,
-                    style: const TextStyle(color: Colors.white70, height: 1.4),
-                  ),
-                  const SizedBox(height: 16),
-                  const Divider(color: Colors.white10),
-                  TextButton.icon(
-                    onPressed: () =>
-                        _showReplyDialog(context, fb['user'] as String),
-                    icon: const Icon(Icons.reply, size: 16),
-                    label: const Text('REPLY TO CUSTOMER'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      padding: EdgeInsets.zero,
+      body: ResponsiveLayout(
+        child: ListView.separated(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          itemCount: mockFeedback.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          itemBuilder: (context, index) {
+            final fb = mockFeedback[index];
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(fb['user'] as String,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(fb['date'] as String,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.white24)),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Row(
+                      children: List.generate(5, (i) {
+                        return Icon(
+                          Icons.star,
+                          size: 16,
+                          color: i < (fb['rating'] as int)
+                              ? Colors.orange
+                              : Colors.white12,
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      fb['comment'] as String,
+                      style:
+                          const TextStyle(color: Colors.white70, height: 1.4),
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(color: Colors.white10),
+                    TextButton.icon(
+                      onPressed: () =>
+                          _showReplyDialog(context, fb['user'] as String),
+                      icon: const Icon(Icons.reply, size: 16),
+                      label: const Text('REPLY TO CUSTOMER'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   void _showReplyDialog(BuildContext context, String userName) {
+    final controller = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Reply to $userName'),
-        content: const TextField(
-          decoration: InputDecoration(
+        scrollable: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(
+          'REPLY TO ${userName.toUpperCase()}',
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+        ),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
             hintText: 'Type your response...',
             border: OutlineInputBorder(),
           ),
-          maxLines: 3,
+          maxLines: 4,
+          style: const TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL')),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL',
+                style: TextStyle(color: Colors.white38, fontSize: 12)),
+          ),
           ElevatedButton(
             onPressed: () {
+              if (controller.text.trim().isEmpty) return;
+
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Response sent to $userName')),
+                SnackBar(
+                  content: Text('Response sent to ${userName}'),
+                  backgroundColor: AppColors.success,
+                ),
               );
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              foregroundColor: AppColors.primary,
+              elevation: 0,
+            ),
             child: const Text('SEND REPLY'),
           ),
         ],

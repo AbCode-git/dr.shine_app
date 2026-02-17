@@ -5,6 +5,7 @@ import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class InventoryListScreen extends StatefulWidget {
   const InventoryListScreen({super.key});
@@ -60,31 +61,33 @@ class _InventoryListScreenState extends State<InventoryListScreen>
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add),
       ),
-      body: StreamBuilder<List<InventoryItem>>(
-        stream: inventoryProvider.getInventoryStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: ResponsiveLayout(
+        child: StreamBuilder<List<InventoryItem>>(
+          stream: inventoryProvider.getInventoryStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final items = snapshot.data ?? [];
-          if (items.isEmpty) {
-            return const Center(child: Text('No inventory items found.'));
-          }
+            final items = snapshot.data ?? [];
+            if (items.isEmpty) {
+              return const Center(child: Text('No inventory items found.'));
+            }
 
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              _buildInventoryList(items),
-              _buildInventoryList(items
-                  .where((i) => i.category == InventoryCategory.carWash)
-                  .toList()),
-              _buildInventoryList(items
-                  .where((i) => i.category == InventoryCategory.oilChange)
-                  .toList()),
-            ],
-          );
-        },
+            return TabBarView(
+              controller: _tabController,
+              children: [
+                _buildInventoryList(items),
+                _buildInventoryList(items
+                    .where((i) => i.category == InventoryCategory.carWash)
+                    .toList()),
+                _buildInventoryList(items
+                    .where((i) => i.category == InventoryCategory.oilChange)
+                    .toList()),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

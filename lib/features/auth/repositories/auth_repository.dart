@@ -7,6 +7,16 @@ abstract class IAuthRepository {
   /// Performs a simplified login using phone and PIN (No OTP).
   Future<void> signInWithPhoneAndPin(String phoneNumber, String pin);
 
+  /// Creates a new user account with phone, PIN, name, role, and branch.
+  Future<void> signUp(
+      String phoneNumber, String pin, String displayName, String role,
+      {String? tenantId});
+
+  /// Registers a staff member without logging in as them.
+  Future<void> registerStaff(
+      String phoneNumber, String pin, String displayName, String role,
+      {String? tenantId});
+
   Future<void> signOut();
 
   Future<UserModel?> getUserData(String uid);

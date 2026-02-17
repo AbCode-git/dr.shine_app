@@ -11,7 +11,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('HomeScreen: Building...');
     final authProvider = context.watch<AuthProvider>();
+    debugPrint(
+        'HomeScreen: authProvider.isInitialized = ${authProvider.isInitialized}');
+    debugPrint(
+        'HomeScreen: authProvider.isAuthenticated = ${authProvider.isAuthenticated}');
 
     // 0. Show loading during initialization
     if (!authProvider.isInitialized) {
@@ -32,11 +37,14 @@ class HomeScreen extends StatelessWidget {
     }
 
     // 3. Route based on role (admin/super_admin only)
-    if (user?.role == 'super_admin') {
+    if (user?.role == 'superadmin') {
+      debugPrint('HomeScreen: Routing to SuperAdminDashboard');
       return const SuperAdminDashboardScreen();
-    } else if (user?.role == 'admin') {
+    } else if (['admin', 'staff'].contains(user?.role)) {
+      debugPrint('HomeScreen: Routing to AdminDashboard (Role: ${user?.role})');
       return const AdminDashboardScreen();
     } else {
+      debugPrint('HomeScreen: Access Denied (Role: ${user?.role})');
       // No customer access - show error message
       return Scaffold(
         body: Center(

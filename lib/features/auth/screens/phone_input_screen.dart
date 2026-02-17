@@ -8,6 +8,7 @@ import 'package:dr_shine_app/core/widgets/primary_button.dart';
 import 'package:dr_shine_app/core/widgets/bubble_animation_widget.dart';
 import 'package:dr_shine_app/features/auth/widgets/shining_car_logo.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class PhoneInputScreen extends StatefulWidget {
   const PhoneInputScreen({super.key});
@@ -56,53 +57,79 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
 
           // Content Layer
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.p24, vertical: 40),
-              child: Column(
-                children: [
-                  const Center(
-                    child: Hero(
-                      tag: 'logo',
-                      child: ShiningCarLogo(size: 160),
+            child: ResponsiveLayout(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.p24, vertical: 40),
+                child: Column(
+                  children: [
+                    const Center(
+                      child: Hero(
+                        tag: 'logo',
+                        child: ShiningCarLogo(size: 160),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.p24),
-                  const Text(
-                    'DR. SHINE',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 8,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(color: AppColors.primary, blurRadius: 20),
-                      ],
+                    const SizedBox(height: AppSizes.p24),
+                    const Text(
+                      'DR. SHINE',
+                      style: TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 8,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(color: AppColors.primary, blurRadius: 20),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const Text(
-                    'PREMIUM CAR CARE SUITE',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 4,
-                      color: AppColors.primary,
+                    const Text(
+                      'PREMIUM CAR CARE SUITE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 4,
+                        color: AppColors.primary,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 60),
+                    const SizedBox(height: 60),
 
-                  // Login Glass Card
-                  _buildLoginCard(context, authProvider),
+                    // Login Glass Card
+                    _buildLoginCard(context, authProvider),
 
-                  const SizedBox(height: 50),
+                    const SizedBox(height: 24),
 
-                  // Premium Role Hub (The "Wow" FTA)
-                  _buildRoleHub(context),
+                    // Create Account Button
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.pushNamed(context, AppRoutes.register),
+                      child: RichText(
+                        text: const TextSpan(
+                          text: 'New here? ',
+                          style: TextStyle(color: Colors.white38, fontSize: 13),
+                          children: [
+                            TextSpan(
+                              text: 'CREATE ACCOUNT',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
-                  const SizedBox(height: 40),
-                ],
+                    const SizedBox(height: 30),
+
+                    // Premium Role Hub (The "Wow" FTA)
+                    _buildRoleHub(context),
+
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
           ),

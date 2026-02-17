@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dr_shine_app/features/status/providers/status_provider.dart';
 import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dart';
 import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart';
@@ -10,19 +9,32 @@ import 'package:dr_shine_app/shared/models/service_model.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
 
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
+
+import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
+import 'package:dr_shine_app/features/admin/providers/package_provider.dart'; // Added Import
+import 'package:dr_shine_app/features/admin/models/package_model.dart'; // Added Import
+import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
+
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final statusProvider = context.watch<StatusProvider>();
     final bookingProvider = context.watch<BookingProvider>();
     final inventoryProvider = context.watch<InventoryProvider>();
+    final serviceProvider = context.watch<ServiceProvider>();
+    final packageProvider =
+        context.watch<PackageProvider>(); // Added PackageProvider
+    final authProvider = context.watch<AuthProvider>();
+    final role = authProvider.currentUser?.role ?? 'customer';
+    final isAdmin = role == 'admin' || role == 'superadmin';
+    final isStaff = role == 'staff';
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Staff Command Center'),
+        title: const Text('Dr. Shine Dashboard'),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -32,187 +44,320 @@ class AdminDashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.p20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Duty Status Hub
-            _buildDutyHub(statusProvider),
-            const SizedBox(height: AppSizes.p24),
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Analytics Overview Hub
+              if (isAdmin) ...[
+                _buildAnalyticsOverview(bookingProvider),
+                const SizedBox(height: AppSizes.p24),
+              ],
+              const SizedBox(height: AppSizes.p24),
 
-            // Primary Command CTAs
-            _buildActionGrid(context),
-            const SizedBox(height: AppSizes.p24),
-            _buildQuickEntryShortcuts(context),
-            const SizedBox(height: AppSizes.p24),
+              // Duty & Team Status
+              _buildStaffSummary(bookingProvider),
+              const SizedBox(height: AppSizes.p24),
 
-            // Operational Alerts
-            _buildOperationalAlerts(inventoryProvider),
-            const SizedBox(height: AppSizes.p32),
+              // Washer Performance Leaderboard
+              _buildWasherPerformance(bookingProvider),
+              const SizedBox(height: AppSizes.p24),
 
-            // Live Wash Tracker Section
-            _buildLiveWashTracker(bookingProvider),
-          ],
+              // Operational Alerts
+              _buildOperationalAlerts(inventoryProvider),
+              const SizedBox(height: AppSizes.p24),
+
+              // Primary Command CTAs
+              _buildActionGrid(context, isAdmin: isAdmin, isStaff: isStaff),
+              const SizedBox(height: AppSizes.p24),
+
+              // Live Wash TrackerSection
+              _buildLiveWashTracker(bookingProvider, serviceProvider,
+                  packageProvider), // Pass provider
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDutyHub(StatusProvider provider) {
-    final isBusy = provider.currentStatus == BusyStatus.busy;
+  Widget _buildAnalyticsOverview(BookingProvider provider) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-            color: (isBusy ? Colors.redAccent : AppColors.success)
-                .withValues(alpha: 0.1)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primary,
+            AppColors.primary.withValues(alpha: 0.7),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: (isBusy ? Colors.redAccent : AppColors.success)
-                  .withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isBusy
-                  ? Icons.notifications_paused_rounded
-                  : Icons.sensors_rounded,
-              color: isBusy ? Colors.redAccent : AppColors.success,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'STATION STATUS',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.5,
-                    color: Colors.white.withValues(alpha: 0.3),
-                  ),
-                ),
-                Text(
-                  isBusy ? 'BUSY / NO ADMISSIONS' : 'ON-DUTY / READY',
-                  style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          Switch.adaptive(
-            value: !isBusy,
-            activeTrackColor: AppColors.success,
-            onChanged: (val) => provider
-                .updateStatus(val ? BusyStatus.notBusy : BusyStatus.busy),
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            alignment: WrapAlignment.spaceAround,
+            children: [
+              _buildStatItem(
+                label: "TODAY'S REVENUE",
+                value: '${provider.totalRevenueToday.toStringAsFixed(0)} ETB',
+                icon: Icons.account_balance_wallet_rounded,
+              ),
+              _buildStatItem(
+                label: 'COMPLETED',
+                value: provider.completedCountToday.toString(),
+                icon: Icons.check_circle_rounded,
+              ),
+              _buildStatItem(
+                label: 'ACTIVE',
+                value: provider.activeWashesCount.toString(),
+                icon: Icons.local_car_wash_rounded,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuickEntryShortcuts(BuildContext context) {
+  Widget _buildStatItem({
+    required String label,
+    required String value,
+    required IconData icon,
+  }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'QUICK ACTIONS',
-          style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-              color: AppColors.textSecondary),
+        Icon(icon, color: Colors.white70, size: 20),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+          ),
         ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildShortCutButton(
-                context,
-                'ADD STAFF',
-                Icons.person_add_rounded,
-                AppColors.primary,
-                () => Navigator.pushNamed(context, AppRoutes.staffManagement),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildShortCutButton(
-                context,
-                'NEW ITEM',
-                Icons.add_shopping_cart,
-                AppColors.success,
-                () => Navigator.pushNamed(context, AppRoutes.inventoryForm),
-              ),
-            ),
-          ],
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white60,
+            fontSize: 9,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildShortCutButton(BuildContext context, String label, IconData icon,
-      Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: color,
+  Widget _buildStaffSummary(BookingProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'TEAM SIZE',
+            style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                color: Colors.white38,
+                letterSpacing: 1),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(Icons.people_alt_rounded,
+                  size: 18, color: AppColors.info),
+              const SizedBox(width: 8),
+              Text(
+                '${provider.washerPerformanceToday.length} Workers',
+                style:
+                    const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildActionGrid(BuildContext context) {
-    return Row(
+  Widget _buildWasherPerformance(BookingProvider provider) {
+    final performance = provider.washerPerformanceToday;
+    if (performance.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: _buildActionCard(
-            context,
-            label: 'Quick Entry',
-            icon: Icons.add_rounded,
-            color: AppColors.primary,
-            onTap: () => Navigator.pushNamed(context, AppRoutes.quickEntry),
+        const Text(
+          'WASHER PERFORMANCE (TODAY)',
+          style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+              color: Colors.white38),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            children: performance.entries.map((entry) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                      child: Text(
+                        entry.key[0].toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primary),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        entry.key,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 13),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${entry.value} WASHES',
+                        style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white70),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildActionCard(
-            context,
-            label: 'Wash Reports',
-            icon: Icons.analytics_rounded,
-            color: AppColors.success,
-            onTap: () => Navigator.pushNamed(context, AppRoutes.washReports),
-          ),
+      ],
+    );
+  }
+
+  Widget _buildActionGrid(BuildContext context,
+      {required bool isAdmin, required bool isStaff}) {
+    // Determine available actions based on role
+    final actions = <Widget>[];
+
+    // 1. Quick Entry (Everyone)
+    actions.add(_buildActionCard(
+      context,
+      label: 'Quick Entry',
+      icon: Icons.add_rounded,
+      color: AppColors.primary,
+      onTap: () => Navigator.pushNamed(context, AppRoutes.quickEntry),
+    ));
+
+    // 2. Inventory (Admin & Staff)
+    if (isAdmin || isStaff) {
+      actions.add(_buildActionCard(
+        context,
+        label: 'Inventory',
+        icon: Icons.inventory_2_outlined,
+        color: Colors.orangeAccent,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.inventory),
+      ));
+    }
+
+    // 3. Admin Only Actions
+    if (isAdmin) {
+      actions.add(_buildActionCard(
+        context,
+        label: 'Staff Management',
+        icon: Icons.people_outline_rounded,
+        color: AppColors.info,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.staffManagement),
+      ));
+
+      actions.add(_buildActionCard(
+        context,
+        label: 'Wash Reports',
+        icon: Icons.analytics_rounded,
+        color: AppColors.success,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.washReports),
+      ));
+
+      actions.add(_buildActionCard(
+        context,
+        label: 'Services',
+        icon: Icons.local_offer_rounded,
+        color: Colors.blueAccent,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.servicePricing),
+      ));
+
+      actions.add(_buildActionCard(
+        context,
+        label: 'Packages',
+        icon: Icons.inventory_2_rounded,
+        color: Colors.amber,
+        onTap: () => Navigator.pushNamed(context, AppRoutes.packagePricing),
+      ));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'CORE OPERATIONS',
+          style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+              color: Colors.white38),
+        ),
+        const SizedBox(height: 16),
+        // Use a Wrap for dynamic number of items without forced rows
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: actions.map((widget) {
+            // Calculate width based on screen size (handled by LayoutBuilder in parent usually,
+            // but here we can just make them expand to fill space using SizedBox)
+            // For simplicity in Wrap, we'll give them a fixed min-width or use LayoutBuilder
+            return SizedBox(
+              width: (MediaQuery.of(context).size.width - 48 - 12) /
+                  2, // 2 columns accounting for padding (20*2) + gap (12) roughly
+              child: widget,
+            );
+          }).toList(),
         ),
       ],
     );
@@ -312,7 +457,8 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLiveWashTracker(BookingProvider provider) {
+  Widget _buildLiveWashTracker(BookingProvider bookingProvider,
+      ServiceProvider serviceProvider, PackageProvider packageProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -337,10 +483,9 @@ class AdminDashboardScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        StreamBuilder<List<BookingModel>>(
-          stream: provider.getTodayBookings(),
-          builder: (context, snapshot) {
-            final washes = snapshot.data ?? [];
+        Builder(
+          builder: (context) {
+            final washes = bookingProvider.bookings;
             if (washes.isEmpty) {
               return Container(
                 padding: const EdgeInsets.all(40),
@@ -362,7 +507,8 @@ class AdminDashboardScreen extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final wash = washes[index];
-                return _buildWashCard(context, wash, provider);
+                return _buildWashCard(context, wash, bookingProvider,
+                    serviceProvider, packageProvider);
               },
             );
           },
@@ -372,9 +518,40 @@ class AdminDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildWashCard(
-      BuildContext context, BookingModel wash, BookingProvider provider) {
-    final service = defaultServices.firstWhere((s) => s.id == wash.serviceId,
-        orElse: () => defaultServices.first);
+      BuildContext context,
+      BookingModel wash,
+      BookingProvider bookingProvider,
+      ServiceProvider serviceProvider,
+      PackageProvider packageProvider) {
+    // Resolve Service or Package Name
+    String serviceName = 'Unknown Service';
+    // Price is already on the booking, so we just need the name for display
+
+    if (wash.serviceId != null) {
+      final service = serviceProvider.services.firstWhere(
+        (s) => s.id == wash.serviceId,
+        orElse: () => ServiceModel(
+          id: 'unknown',
+          name: 'Unknown Service',
+          description: '',
+          price: 0,
+        ),
+      );
+      serviceName = service.name;
+    } else if (wash.packageId != null) {
+      final pkg = packageProvider.packages.firstWhere(
+        (p) => p.id == wash.packageId,
+        orElse: () => PackageModel(
+          id: 'unknown',
+          name: 'Unknown Package',
+          description: '',
+          price: 0,
+          includedServiceIds: [],
+        ),
+      );
+      serviceName = pkg.name; // Use package name instead
+    }
+
     final statusColor = _getStatusColor(wash.status);
 
     return Container(
@@ -416,7 +593,7 @@ class AdminDashboardScreen extends StatelessWidget {
                             fontWeight: FontWeight.w900, fontSize: 16),
                       ),
                       Text(
-                        '${service.name} • Assigned: ${wash.washerStaffName ?? "General"}',
+                        '$serviceName • Assigned: ${wash.washerStaffName ?? "General"}',
                         style: const TextStyle(
                             color: Colors.white38, fontSize: 12),
                       ),
@@ -430,7 +607,7 @@ class AdminDashboardScreen extends StatelessWidget {
           Divider(height: 1, color: Colors.white.withValues(alpha: 0.03)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: _buildWashActions(context, wash, provider),
+            child: _buildWashActions(context, wash, bookingProvider),
           ),
         ],
       ),
@@ -469,34 +646,72 @@ class AdminDashboardScreen extends StatelessWidget {
 
   Widget _buildWashActions(
       BuildContext context, BookingModel wash, BookingProvider provider) {
+    Future<void> handleUpdate(Future<void> action, String successMsg) async {
+      try {
+        await action;
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(successMsg),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+
     switch (wash.status) {
       case 'pending':
         return _buildLargeActionButton(
           label: 'ACCEPT JOB',
           icon: Icons.check_circle_rounded,
           color: AppColors.success,
-          onPressed: () => provider.updateBookingStatus(wash.id, 'accepted'),
+          onPressed: () => handleUpdate(
+            provider.updateBookingStatus(wash.id, 'accepted'),
+            'Job accepted!',
+          ),
         );
       case 'accepted':
         return _buildLargeActionButton(
           label: 'START WASHING',
           icon: Icons.play_arrow_rounded,
           color: AppColors.primary,
-          onPressed: () => provider.updateBookingStatus(wash.id, 'washing'),
+          onPressed: () => handleUpdate(
+            provider.updateBookingStatus(wash.id, 'washing'),
+            'Wash started!',
+          ),
         );
       case 'washing':
         return _buildLargeActionButton(
           label: 'MARK AS READY',
           icon: Icons.done_all_rounded,
           color: AppColors.info,
-          onPressed: () => provider.updateBookingStatus(wash.id, 'ready'),
+          onPressed: () => handleUpdate(
+            provider.updateBookingStatus(wash.id, 'ready'),
+            'Vehicle is ready for pickup!',
+          ),
         );
       case 'ready':
         return _buildLargeActionButton(
           label: 'FINALIZE & RELEASE',
           icon: Icons.flag_rounded,
           color: AppColors.success,
-          onPressed: () => provider.completeWash(wash),
+          onPressed: () => handleUpdate(
+            provider.completeWash(wash),
+            'Wash session completed and finalized!',
+          ),
         );
       default:
         return const SizedBox(height: 8);

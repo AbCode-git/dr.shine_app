@@ -114,7 +114,7 @@ CREATE POLICY "Profiles access" ON profiles
     FOR ALL USING (
         id = auth.uid() 
         OR 
-        tenant_id = (SELECT tenant_id FROM profiles WHERE id = auth.uid())
+        tenant_id = get_user_tenant_id()
     );
 
 -- Bookings: Users can see/modify bookings in their own tenant

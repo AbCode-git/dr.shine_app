@@ -6,7 +6,8 @@ import 'package:dr_shine_app/features/admin/screens/admin_dashboard_screen.dart'
 import 'package:dr_shine_app/features/admin/screens/wash_reports_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/super_admin_dashboard_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/staff_list_screen.dart';
-import 'package:dr_shine_app/features/admin/screens/service_price_editor.dart';
+import 'package:dr_shine_app/features/admin/screens/service_management_screen.dart';
+import 'package:dr_shine_app/features/admin/screens/package_management_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/branch_management_screen.dart';
 import 'package:dr_shine_app/features/booking/screens/booking_details_screen.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
@@ -22,6 +23,7 @@ import 'package:dr_shine_app/features/admin/screens/performance_analytics_screen
 import 'package:dr_shine_app/features/admin/screens/app_config_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/feedback_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/loyalty_analytics_screen.dart';
+import 'package:dr_shine_app/features/auth/screens/register_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -31,6 +33,7 @@ class AppRoutes {
   static const String superAdmin = '/super-admin';
   static const String staffManagement = '/staff-management';
   static const String servicePricing = '/service-pricing';
+  static const String packagePricing = '/package-pricing';
   static const String pinSetup = '/pin-setup';
   static const String pinLogin = '/pin-login';
   static const String profile = '/profile';
@@ -45,6 +48,7 @@ class AppRoutes {
   static const String quickEntry = '/quick-entry';
   static const String washReports = '/wash-reports';
   static const String branchManagement = '/branch-management';
+  static const String register = '/register';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -52,6 +56,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case auth:
         return MaterialPageRoute(builder: (_) => const PhoneInputScreen());
+      case register:
+        return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case bookingDetails:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
@@ -69,7 +75,11 @@ class AppRoutes {
       case staffManagement:
         return MaterialPageRoute(builder: (_) => const StaffListScreen());
       case servicePricing:
-        return MaterialPageRoute(builder: (_) => const ServicePriceEditor());
+        return MaterialPageRoute(
+            builder: (_) => const ServiceManagementScreen());
+      case packagePricing:
+        return MaterialPageRoute(
+            builder: (_) => const PackageManagementScreen());
       case pinSetup:
         return MaterialPageRoute(builder: (_) => const PinSetupScreen());
       case pinLogin:

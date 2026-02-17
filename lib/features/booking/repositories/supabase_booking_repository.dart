@@ -4,7 +4,7 @@ import 'package:dr_shine_app/features/booking/repositories/booking_repository.da
 import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class SupabaseBookingRepository implements IBookingRepository {
-  final SupabaseClient _client = Supabase.instance.client;
+  SupabaseClient get _client => Supabase.instance.client;
 
   @override
   Stream<List<BookingModel>> getBookingsByDateRange(

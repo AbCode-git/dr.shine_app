@@ -4,6 +4,7 @@ import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -19,38 +20,41 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.p24),
-        child: Column(
-          children: [
-            _buildProfileHeader(user),
-            const SizedBox(height: AppSizes.p32),
-            _buildInfoSection(
-              title: 'Account Information',
-              items: [
-                _buildInfoTile(Icons.phone_iphone, 'Phone Number',
-                    user?.phoneNumber ?? 'N/A'),
-                _buildInfoTile(Icons.verified_user, 'Role',
-                    user?.role.toUpperCase() ?? 'CUSTOMER'),
-                _buildInfoTile(
-                    Icons.calendar_today, 'Member Since', 'Jan 2026'),
-              ],
-            ),
-            const SizedBox(height: AppSizes.p24),
-            _buildInfoSection(
-              title: 'Security',
-              items: [
-                ListTile(
-                  leading: const Icon(Icons.pin, color: AppColors.primary),
-                  title: const Text('Update Security PIN'),
-                  trailing: const Icon(Icons.chevron_right, size: 16),
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.pinSetup),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSizes.p40),
-            _buildLogoutButton(context, authProvider),
-          ],
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.p24),
+          child: Column(
+            children: [
+              _buildProfileHeader(user),
+              const SizedBox(height: AppSizes.p32),
+              _buildInfoSection(
+                title: 'Account Information',
+                items: [
+                  _buildInfoTile(Icons.phone_iphone, 'Phone Number',
+                      user?.phoneNumber ?? 'N/A'),
+                  _buildInfoTile(Icons.verified_user, 'Role',
+                      user?.role.toUpperCase() ?? 'CUSTOMER'),
+                  _buildInfoTile(
+                      Icons.calendar_today, 'Member Since', 'Jan 2026'),
+                ],
+              ),
+              const SizedBox(height: AppSizes.p24),
+              _buildInfoSection(
+                title: 'Security',
+                items: [
+                  ListTile(
+                    leading: const Icon(Icons.pin, color: AppColors.primary),
+                    title: const Text('Update Security PIN'),
+                    trailing: const Icon(Icons.chevron_right, size: 16),
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.pinSetup),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSizes.p40),
+              _buildLogoutButton(context, authProvider),
+            ],
+          ),
         ),
       ),
     );

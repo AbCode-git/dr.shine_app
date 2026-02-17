@@ -4,7 +4,7 @@ import 'package:dr_shine_app/features/status/repositories/status_repository.dart
 import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class SupabaseStatusRepository implements IStatusRepository {
-  final SupabaseClient _client = Supabase.instance.client;
+  SupabaseClient get _client => Supabase.instance.client;
 
   @override
   Stream<BusyStatus> getStatusStream() {

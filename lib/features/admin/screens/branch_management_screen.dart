@@ -3,6 +3,7 @@ import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/services/service_locator.dart';
 import 'package:dr_shine_app/features/admin/models/tenant_model.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class BranchManagementScreen extends StatefulWidget {
   const BranchManagementScreen({super.key});
@@ -46,8 +47,11 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title:
-            const Text('Add New Branch', style: TextStyle(color: Colors.white)),
+        scrollable: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text('ADD NEW BRANCH',
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
         content: TextField(
           controller: controller,
           style: const TextStyle(color: Colors.white),
@@ -59,7 +63,8 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
+            child: const Text('CANCEL',
+                style: TextStyle(color: Colors.white38, fontSize: 12)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -69,7 +74,12 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
                 _loadTenants();
               }
             },
-            child: const Text('CREATE'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              foregroundColor: AppColors.primary,
+              elevation: 0,
+            ),
+            child: const Text('CREATE BRANCH'),
           ),
         ],
       ),
@@ -89,11 +99,13 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _tenants.isEmpty
-              ? const _EmptyState()
-              : _buildBranchList(),
+      body: ResponsiveLayout(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _tenants.isEmpty
+                ? const _EmptyState()
+                : _buildBranchList(),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddBranchDialog,
         icon: const Icon(Icons.add),
@@ -153,17 +165,32 @@ class _BranchManagementScreenState extends State<BranchManagementScreen> {
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Delete Branch?'),
-                    content:
-                        Text('Are you sure you want to remove ${tenant.name}?'),
+                    backgroundColor: AppColors.surface,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24)),
+                    title: const Text('DELETE BRANCH?',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5)),
+                    content: Text(
+                        'This will permanently remove ${tenant.name} and all associated data.',
+                        style: const TextStyle(color: Colors.white60)),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('CANCEL')),
-                      TextButton(
+                          child: const Text('CANCEL',
+                              style: TextStyle(
+                                  color: Colors.white38, fontSize: 12))),
+                      ElevatedButton(
                           onPressed: () => Navigator.pop(context, true),
-                          child: const Text('DELETE',
-                              style: TextStyle(color: Colors.red))),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.redAccent.withValues(alpha: 0.1),
+                            foregroundColor: Colors.redAccent,
+                            elevation: 0,
+                          ),
+                          child: const Text('CONFIRM DELETE')),
                     ],
                   ),
                 );

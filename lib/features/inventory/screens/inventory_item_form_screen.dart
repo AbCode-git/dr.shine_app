@@ -4,6 +4,7 @@ import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dar
 import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 import 'package:uuid/uuid.dart';
 
 class InventoryItemFormScreen extends StatefulWidget {
@@ -52,63 +53,65 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
         title: Text(
             widget.item == null ? 'Add Item' : 'Edit ${widget.item!.name}'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.p24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildDropdown(),
-              const SizedBox(height: AppSizes.p20),
-              _buildTextField(_nameController, 'Item Name', Icons.inventory),
-              const SizedBox(height: AppSizes.p20),
-              Row(
-                children: [
-                  Expanded(
-                      child: _buildTextField(_currentStockController,
-                          'Current Stock', Icons.numbers,
-                          isNumber: true)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _buildTextField(_unitController,
-                          'Unit (e.g. Liters)', Icons.straighten)),
-                ],
-              ),
-              const SizedBox(height: AppSizes.p20),
-              Row(
-                children: [
-                  Expanded(
-                      child: _buildTextField(
-                          _minStockController, 'Min Stock', Icons.warning_amber,
-                          isNumber: true)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _buildTextField(
-                          _reorderController, 'Reorder Point', Icons.reorder,
-                          isNumber: true)),
-                ],
-              ),
-              const SizedBox(height: AppSizes.p20),
-              _buildTextField(
-                  _costController, 'Cost Per Unit (ETB)', Icons.payments,
-                  isNumber: true),
-              if (_category == InventoryCategory.oilChange) ...[
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.p24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildDropdown(),
                 const SizedBox(height: AppSizes.p20),
-                _buildTextField(_viscosityController,
-                    'Viscosity Grade (e.g. 5W-30)', Icons.oil_barrel),
-              ],
-              const SizedBox(height: AppSizes.p40),
-              ElevatedButton(
-                onPressed: _saveItem,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                  backgroundColor: AppColors.primary,
+                _buildTextField(_nameController, 'Item Name', Icons.inventory),
+                const SizedBox(height: AppSizes.p20),
+                Row(
+                  children: [
+                    Expanded(
+                        child: _buildTextField(_currentStockController,
+                            'Current Stock', Icons.numbers,
+                            isNumber: true)),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: _buildTextField(_unitController,
+                            'Unit (e.g. Liters)', Icons.straighten)),
+                  ],
                 ),
-                child:
-                    Text(widget.item == null ? 'CREATE ITEM' : 'UPDATE ITEM'),
-              ),
-            ],
+                const SizedBox(height: AppSizes.p20),
+                Row(
+                  children: [
+                    Expanded(
+                        child: _buildTextField(_minStockController, 'Min Stock',
+                            Icons.warning_amber,
+                            isNumber: true)),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: _buildTextField(
+                            _reorderController, 'Reorder Point', Icons.reorder,
+                            isNumber: true)),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.p20),
+                _buildTextField(
+                    _costController, 'Cost Per Unit (ETB)', Icons.payments,
+                    isNumber: true),
+                if (_category == InventoryCategory.oilChange) ...[
+                  const SizedBox(height: AppSizes.p20),
+                  _buildTextField(_viscosityController,
+                      'Viscosity Grade (e.g. 5W-30)', Icons.oil_barrel),
+                ],
+                const SizedBox(height: AppSizes.p40),
+                ElevatedButton(
+                  onPressed: _saveItem,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 56),
+                    backgroundColor: AppColors.primary,
+                  ),
+                  child:
+                      Text(widget.item == null ? 'CREATE ITEM' : 'UPDATE ITEM'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

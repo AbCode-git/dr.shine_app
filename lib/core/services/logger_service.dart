@@ -19,7 +19,7 @@ class LoggerService {
       level: _getDeveloperLevel(level),
     );
 
-    // In a real senior app, we would also send errors to Sentry/Firebase Crashlytics here
+    // In a real production app, we would also send errors to Sentry/Crashlytics here
     if (level == LogLevel.error && error != null) {
       // reportToCrashlytics(error, stackTrace);
     }

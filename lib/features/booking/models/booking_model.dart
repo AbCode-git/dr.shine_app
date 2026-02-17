@@ -3,7 +3,8 @@ class BookingModel {
   final String? tenantId; // Multi-tenancy support
   final String userId;
   final String vehicleId;
-  final String serviceId;
+  final String? serviceId; // Nullable if packageId is present
+  final String? packageId; // New: Support for packages
   final String
       status; // pending, accepted, washing, ready, completed, cancelled
   final DateTime bookingDate; // Today or Tomorrow
@@ -25,7 +26,8 @@ class BookingModel {
     this.tenantId,
     required this.userId,
     required this.vehicleId,
-    required this.serviceId,
+    this.serviceId,
+    this.packageId,
     required this.status,
     required this.bookingDate,
     required this.createdAt,
@@ -47,6 +49,7 @@ class BookingModel {
       'userId': userId,
       'vehicleId': vehicleId,
       'serviceId': serviceId,
+      'packageId': packageId,
       'status': status,
       'bookingDate': bookingDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -68,7 +71,8 @@ class BookingModel {
       tenantId: map['tenant_id'],
       userId: map['userId'] ?? '',
       vehicleId: map['vehicleId'] ?? '',
-      serviceId: map['serviceId'] ?? '',
+      serviceId: map['serviceId'],
+      packageId: map['packageId'],
       status: map['status'] ?? 'pending',
       bookingDate: DateTime.parse(map['bookingDate']),
       createdAt: DateTime.parse(map['createdAt']),
@@ -94,6 +98,7 @@ class BookingModel {
     String? userId,
     String? vehicleId,
     String? serviceId,
+    String? packageId,
     String? status,
     DateTime? bookingDate,
     DateTime? createdAt,
@@ -113,6 +118,7 @@ class BookingModel {
       userId: userId ?? this.userId,
       vehicleId: vehicleId ?? this.vehicleId,
       serviceId: serviceId ?? this.serviceId,
+      packageId: packageId ?? this.packageId,
       status: status ?? this.status,
       bookingDate: bookingDate ?? this.bookingDate,
       createdAt: createdAt ?? this.createdAt,

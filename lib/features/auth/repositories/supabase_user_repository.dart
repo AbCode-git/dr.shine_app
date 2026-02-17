@@ -4,7 +4,7 @@ import 'package:dr_shine_app/features/auth/repositories/user_repository.dart';
 import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class SupabaseUserRepository implements IUserRepository {
-  final SupabaseClient _client = Supabase.instance.client;
+  SupabaseClient get _client => Supabase.instance.client;
 
   @override
   Future<UserModel?> getCurrentUser(String uid) async {

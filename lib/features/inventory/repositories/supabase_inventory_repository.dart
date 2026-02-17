@@ -4,7 +4,7 @@ import 'package:dr_shine_app/features/inventory/repositories/inventory_repositor
 import 'package:dr_shine_app/core/services/logger_service.dart';
 
 class SupabaseInventoryRepository implements IInventoryRepository {
-  final SupabaseClient _client = Supabase.instance.client;
+  SupabaseClient get _client => Supabase.instance.client;
 
   @override
   Stream<List<InventoryItem>> getInventoryStream() {

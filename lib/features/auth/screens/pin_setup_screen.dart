@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/widgets/primary_button.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class PinSetupScreen extends StatefulWidget {
   const PinSetupScreen({super.key});
@@ -22,36 +23,38 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Set Security PIN')),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSizes.p24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Create a 4-digit PIN for faster login next time.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70),
-            ),
-            const SizedBox(height: AppSizes.p32),
-            _buildPinField('Enter PIN', _pinController),
-            const SizedBox(height: AppSizes.p16),
-            _buildPinField('Confirm PIN', _confirmPinController),
-            if (_errorText != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                _errorText!,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
+      body: ResponsiveLayout(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSizes.p24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Create a 4-digit PIN for faster login next time.',
                 textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white70),
+              ),
+              const SizedBox(height: AppSizes.p32),
+              _buildPinField('Enter PIN', _pinController),
+              const SizedBox(height: AppSizes.p16),
+              _buildPinField('Confirm PIN', _confirmPinController),
+              if (_errorText != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _errorText!,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              const SizedBox(height: AppSizes.p32),
+              PrimaryButton(
+                text: 'Save PIN',
+                isLoading: authProvider.isLoading,
+                onPressed: _handleSavePin,
               ),
             ],
-            const SizedBox(height: AppSizes.p32),
-            PrimaryButton(
-              text: 'Save PIN',
-              isLoading: authProvider.isLoading,
-              onPressed: _handleSavePin,
-            ),
-          ],
+          ),
         ),
       ),
     );

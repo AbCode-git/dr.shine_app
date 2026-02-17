@@ -55,4 +55,28 @@ class MockAuthRepository implements IAuthRepository {
       _mockUser = _mockUser!.copyWith(pin: pin);
     }
   }
+
+  @override
+  Future<void> signUp(
+      String phoneNumber, String pin, String displayName, String role,
+      {String? tenantId}) async {
+    await Future.delayed(const Duration(seconds: 1));
+    _mockUser = UserModel(
+      id: 'mock_user_${DateTime.now().millisecondsSinceEpoch}',
+      phoneNumber: phoneNumber,
+      displayName: displayName,
+      role: role,
+      pin: pin,
+      createdAt: DateTime.now(),
+    );
+    _authStateController.add(_mockUser?.id);
+  }
+
+  @override
+  Future<void> registerStaff(
+      String phoneNumber, String pin, String displayName, String role,
+      {String? tenantId}) async {
+    await Future.delayed(const Duration(seconds: 1));
+    print('Mock: Staff $displayName registered successfully.');
+  }
 }

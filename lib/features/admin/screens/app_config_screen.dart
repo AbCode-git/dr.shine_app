@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
 class AppConfigScreen extends StatefulWidget {
@@ -19,65 +20,67 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('App Configuration')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSizes.p20),
-        children: [
-          _buildSectionHeader('SYSTEM STATUS'),
-          const SizedBox(height: 12),
-          _buildToggleTile(
-            'Maintenance Mode',
-            'Take the app offline for maintenance',
-            Icons.construction,
-            _maintenanceMode,
-            (val) => setState(() => _maintenanceMode = val),
-          ),
-          const SizedBox(height: 12),
-          _buildToggleTile(
-            'Accepting Bookings',
-            'Global toggle for taking new wash requests',
-            Icons.calendar_today,
-            _bookingsOpen,
-            (val) => setState(() => _bookingsOpen = val),
-          ),
-          const SizedBox(height: 32),
-          _buildSectionHeader('SUPPORT & CONTACT'),
-          const SizedBox(height: 12),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.phone, color: AppColors.primary),
-              title: const Text('Support Contact Number'),
-              subtitle: Text(_supportPhone),
-              trailing: const Icon(Icons.edit, size: 16),
-              onTap: () => _editSupportPhone(),
+      body: ResponsiveLayout(
+        child: ListView(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          children: [
+            _buildSectionHeader('SYSTEM STATUS'),
+            const SizedBox(height: 12),
+            _buildToggleTile(
+              'Maintenance Mode',
+              'Take the app offline for maintenance',
+              Icons.construction,
+              _maintenanceMode,
+              (val) => setState(() => _maintenanceMode = val),
             ),
-          ),
-          const SizedBox(height: 32),
-          _buildSectionHeader('MARKETING'),
-          const SizedBox(height: 12),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.campaign, color: Colors.orange),
-              title: const Text('Dashboard Banner Message'),
-              subtitle: Text(_bannerMessage),
-              trailing: const Icon(Icons.edit, size: 16),
-              onTap: () => _editBannerMessage(),
+            const SizedBox(height: 12),
+            _buildToggleTile(
+              'Accepting Bookings',
+              'Global toggle for taking new wash requests',
+              Icons.calendar_today,
+              _bookingsOpen,
+              (val) => setState(() => _bookingsOpen = val),
             ),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Configuration saved successfully')),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 56),
-              backgroundColor: AppColors.primary,
+            const SizedBox(height: 32),
+            _buildSectionHeader('SUPPORT & CONTACT'),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.phone, color: AppColors.primary),
+                title: const Text('Support Contact Number'),
+                subtitle: Text(_supportPhone),
+                trailing: const Icon(Icons.edit, size: 16),
+                onTap: () => _editSupportPhone(),
+              ),
             ),
-            child: const Text('SAVE CHANGES'),
-          ),
-        ],
+            const SizedBox(height: 32),
+            _buildSectionHeader('MARKETING'),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.campaign, color: Colors.orange),
+                title: const Text('Dashboard Banner Message'),
+                subtitle: Text(_bannerMessage),
+                trailing: const Icon(Icons.edit, size: 16),
+                onTap: () => _editBannerMessage(),
+              ),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Configuration saved successfully')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 56),
+                backgroundColor: AppColors.primary,
+              ),
+              child: const Text('SAVE CHANGES'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -88,21 +91,32 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Edit Support Phone'),
+        scrollable: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text('EDIT SUPPORT PHONE',
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(labelText: 'Phone Number'),
           keyboardType: TextInputType.phone,
+          style: const TextStyle(fontSize: 15),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL')),
-          TextButton(
+              child: const Text('CANCEL',
+                  style: TextStyle(color: Colors.white38, fontSize: 12))),
+          ElevatedButton(
             onPressed: () {
               setState(() => _supportPhone = controller.text);
               Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              foregroundColor: AppColors.primary,
+              elevation: 0,
+            ),
             child: const Text('SAVE'),
           ),
         ],
@@ -116,21 +130,32 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Edit Banner Message'),
+        scrollable: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text('EDIT BANNER',
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(labelText: 'Message'),
-          maxLines: 3,
+          maxLines: 4,
+          style: const TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL')),
-          TextButton(
+              child: const Text('CANCEL',
+                  style: TextStyle(color: Colors.white38, fontSize: 12))),
+          ElevatedButton(
             onPressed: () {
               setState(() => _bannerMessage = controller.text);
               Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              foregroundColor: AppColors.primary,
+              elevation: 0,
+            ),
             child: const Text('SAVE'),
           ),
         ],

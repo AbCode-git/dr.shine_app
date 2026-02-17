@@ -70,6 +70,8 @@ class BookingProvider extends ChangeNotifier {
   Future<void> updateBookingStatus(String id, String status) async {
     try {
       await _repository.updateBookingStatus(id, status);
+      // Force a local update notification to ensure UI responsiveness
+      notifyListeners();
     } catch (e) {
       LoggerService.error('Status update failed', e);
       rethrow;
@@ -80,10 +82,35 @@ class BookingProvider extends ChangeNotifier {
   Future<void> completeWash(BookingModel booking) async {
     try {
       await _repository.completeWash(booking);
+      // Force a local update notification to ensure UI responsiveness
+      notifyListeners();
     } catch (e) {
       LoggerService.error('Wash completion failed', e);
       rethrow;
     }
+  }
+
+  // Analytics Helpers
+  double get totalRevenueToday => _bookings
+      .where((b) => b.status == 'completed' || b.status == 'ready')
+      .fold(0.0, (sum, b) => sum + b.price);
+
+  int get completedCountToday => _bookings
+      .where((b) => b.status == 'completed' || b.status == 'ready')
+      .length;
+
+  int get activeWashesCount => _bookings
+      .where((b) => b.status == 'washing' || b.status == 'accepted')
+      .length;
+
+  Map<String, int> get washerPerformanceToday {
+    final performance = <String, int>{};
+    for (var b in _bookings
+        .where((b) => b.status == 'completed' || b.status == 'ready')) {
+      final name = b.washerStaffName ?? 'Unassigned';
+      performance[name] = (performance[name] ?? 0) + 1;
+    }
+    return performance;
   }
 
   @override

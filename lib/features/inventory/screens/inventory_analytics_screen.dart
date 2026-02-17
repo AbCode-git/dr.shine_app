@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class InventoryAnalyticsScreen extends StatelessWidget {
   const InventoryAnalyticsScreen({super.key});
@@ -11,23 +12,25 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Inventory Analytics'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.p20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildSummaryRow(),
-            const SizedBox(height: AppSizes.p24),
-            _buildChartSection(
-                'Usage Trends (Mock)', 'Weekly consumption of soap and oil.'),
-            const SizedBox(height: AppSizes.p24),
-            _buildCostAnalysis(),
-            const SizedBox(height: AppSizes.p24),
-            _buildAlertBox(
-                'REORDER SUGGESTIONS',
-                '3 items are below reorder level. Click to restock.',
-                Icons.history_edu),
-          ],
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildSummaryRow(),
+              const SizedBox(height: AppSizes.p24),
+              _buildChartSection(
+                  'Usage Trends (Mock)', 'Weekly consumption of soap and oil.'),
+              const SizedBox(height: AppSizes.p24),
+              _buildCostAnalysis(),
+              const SizedBox(height: AppSizes.p24),
+              _buildAlertBox(
+                  'REORDER SUGGESTIONS',
+                  '3 items are below reorder level. Click to restock.',
+                  Icons.history_edu),
+            ],
+          ),
         ),
       ),
     );

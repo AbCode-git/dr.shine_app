@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 
 class SuperAdminDashboardScreen extends StatelessWidget {
   const SuperAdminDashboardScreen({super.key});
@@ -15,52 +16,60 @@ class SuperAdminDashboardScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppSizes.p24, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'PLATFORM OVERVIEW',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2,
-                color: Colors.white24,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildMetricsGrid(),
-            const SizedBox(height: AppSizes.p32),
-            _buildModuleHub(context),
-            const SizedBox(height: AppSizes.p32),
-            const Row(
-              children: [
-                Text(
-                  'SYSTEM HEALTH',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2,
-                      color: Colors.white24),
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.p24, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'PLATFORM OVERVIEW',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                  color: Colors.white24,
                 ),
-                Spacer(),
-                Icon(Icons.check_circle_rounded,
-                    size: 12, color: AppColors.success),
-                SizedBox(width: 4),
-                Text('OPERATING NORMAL',
+              ),
+              const SizedBox(height: 16),
+              _buildMetricsGrid(),
+              const SizedBox(height: AppSizes.p32),
+              _buildModuleHub(context),
+              const SizedBox(height: AppSizes.p32),
+              const Row(
+                children: [
+                  Text(
+                    'SYSTEM HEALTH',
                     style: TextStyle(
-                        fontSize: 9,
+                        fontSize: 10,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.success)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildDailyReportPreview(context),
-            const SizedBox(height: 40),
-          ],
+                        letterSpacing: 2,
+                        color: Colors.white24),
+                  ),
+                  Spacer(),
+                  Icon(Icons.check_circle_rounded,
+                      size: 12, color: AppColors.success),
+                  SizedBox(width: 4),
+                  Text('OPERATING NORMAL',
+                      style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.success)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildDailyReportPreview(context),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

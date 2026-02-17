@@ -5,7 +5,9 @@ import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/status/providers/status_provider.dart';
 import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
 import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
+import 'package:dr_shine_app/features/admin/providers/package_provider.dart';
 import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dart';
+import 'package:dr_shine_app/features/customer/providers/customer_provider.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
 import 'package:dr_shine_app/app/app_theme.dart';
 import 'package:dr_shine_app/core/services/service_locator.dart';
@@ -29,6 +31,12 @@ class DrShineApp extends StatelessWidget {
             create: (_) => InventoryProvider(locator.inventoryRepository)),
         ChangeNotifierProvider(
           create: (_) => ServiceProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PackageProvider(locator.packageRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CustomerProvider(locator.customerRepository),
         ),
       ],
       child: MaterialApp(

@@ -21,6 +21,7 @@ $$ LANGUAGE sql STABLE SECURITY DEFINER;
 -- ============================================
 -- Step 3: Drop Existing Policies (if any)
 -- ============================================
+DROP POLICY IF EXISTS "Public can view branch names" ON tenants;
 DROP POLICY IF EXISTS "Users can view their tenant" ON tenants;
 DROP POLICY IF EXISTS "Super admins can view all tenants" ON tenants;
 DROP POLICY IF EXISTS "Super admins can create tenants" ON tenants;
@@ -29,6 +30,11 @@ DROP POLICY IF EXISTS "Super admins can delete tenants" ON tenants;
 -- ============================================
 -- Step 4: Create Tenant Access Policies
 -- ============================================
+
+-- Policy 0: Public can view branch names (needed for sign-up branch picker)
+CREATE POLICY "Public can view branch names" ON tenants
+    FOR SELECT
+    USING (true);
 
 -- Policy 1: All users can view their assigned tenant
 CREATE POLICY "Users can view their tenant" ON tenants

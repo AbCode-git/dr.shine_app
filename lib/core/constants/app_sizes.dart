@@ -23,4 +23,7 @@ class AppSizes {
 
   // Button Heights
   static const double buttonHeight = 50.0;
+
+  // Web/Desktop Constraints
+  static const double desktopMaxWidth = 600.0;
 }

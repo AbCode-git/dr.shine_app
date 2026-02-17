@@ -1,0 +1,4 @@
+[ +578 ms] Unable to locate an Android SDK.
+[        ] Running 1 shutdown hook
+[   +1 ms] Shutdown hooks complete
+[        ] exiting with code 64

@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
+import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
-class LoyaltyAnalyticsScreen extends StatelessWidget {
+class LoyaltyAnalyticsScreen extends StatefulWidget {
   const LoyaltyAnalyticsScreen({super.key});
+
+  @override
+  State<LoyaltyAnalyticsScreen> createState() => _LoyaltyAnalyticsScreenState();
+}
+
+class _LoyaltyAnalyticsScreenState extends State<LoyaltyAnalyticsScreen> {
+  final Map<String, String> _rules = {
+    'Points Per Wash': '1',
+    'Free Wash threshold': '5',
+    'Birthday bonus': '2',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -15,42 +27,72 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
         icon: const Icon(Icons.settings),
         label: const Text('CONFIGURE RULES'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.p20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildStatGrid(),
-            const SizedBox(height: 32),
-            _buildSectionHeader('TOP LOYAL CUSTOMERS'),
-            const SizedBox(height: 16),
-            _buildLoyaltyLeaderboard(),
-          ],
+      body: ResponsiveLayout(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildStatGrid(),
+              const SizedBox(height: 32),
+              _buildSectionHeader('TOP LOYAL CUSTOMERS'),
+              const SizedBox(height: 16),
+              _buildLoyaltyLeaderboard(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _showConfigDialog(BuildContext context) {
+    final controllers = <String, TextEditingController>{};
+    _rules.forEach((key, value) {
+      controllers[key] = TextEditingController(text: value);
+    });
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Program Configuration'),
+        scrollable: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text(
+          'PROGRAM CONFIG',
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildConfigRow('Points Per Wash', '1'),
-            _buildConfigRow('Free Wash threshold', '5'),
-            _buildConfigRow('Birthday bonus', '2'),
-          ],
+          children: _rules.keys.map((key) {
+            return _buildConfigRow(key, controllers[key]!);
+          }).toList(),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL')),
-          ElevatedButton(
             onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL',
+                style: TextStyle(color: Colors.white38, fontSize: 12)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                controllers.forEach((key, controller) {
+                  _rules[key] = controller.text;
+                });
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Loyalty rules updated successfully'),
+                    backgroundColor: AppColors.success),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange.withValues(alpha: 0.1),
+              foregroundColor: Colors.orange,
+              elevation: 0,
+            ),
             child: const Text('UPDATE RULES'),
           ),
         ],
@@ -58,24 +100,27 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildConfigRow(String label, String value) {
+  Widget _buildConfigRow(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 13)),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
+          const SizedBox(width: 16),
           SizedBox(
-            width: 60,
+            width: 80,
             child: TextField(
-              decoration: InputDecoration(
-                hintText: value,
+              controller: controller,
+              decoration: const InputDecoration(
                 isDense: true,
-                border: const OutlineInputBorder(),
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
         ],
