@@ -35,6 +35,7 @@ class LoyaltyAnalyticsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: const Text('Program Configuration'),
         content: Column(
           mainAxisSize: MainAxisSize.min,

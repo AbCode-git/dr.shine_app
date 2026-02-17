@@ -30,6 +30,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: Text(isEditing ? 'Edit Staff member' : 'Add New Staff'),
         content: Column(
           mainAxisSize: MainAxisSize.min,

@@ -28,6 +28,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: Text('Edit ${service.name}'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -59,7 +60,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                 price: double.tryParse(priceController.text) ?? service.price,
               );
               await serviceProvider.updateService(updatedService);
-              if (mounted) Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             },
             child: const Text('Save'),
           ),
@@ -75,6 +76,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: const Text('Add New Service'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -110,7 +112,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                 price: double.tryParse(priceController.text) ?? 0,
               );
               await serviceProvider.addService(newService);
-              if (mounted) Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             },
             child: const Text('Add Service'),
           ),
@@ -159,7 +161,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                         _activeStatus[service.id] = val;
                       });
                     },
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                   ),
                   IconButton(
                     icon:

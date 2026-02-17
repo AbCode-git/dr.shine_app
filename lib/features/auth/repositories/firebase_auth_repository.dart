@@ -10,39 +10,13 @@ class FirebaseAuthRepository implements IAuthRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
+  Stream<String?> get authStateChanges =>
+      _auth.authStateChanges().map((u) => u?.uid);
 
   @override
-  Future<void> verifyPhone({
-    required String phoneNumber,
-    required Function(String verificationId) onCodeSent,
-    required Function(Exception e) onVerificationFailed,
-  }) async {
-    try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: const Duration(seconds: 60),
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential);
-        },
-        verificationFailed: (e) => onVerificationFailed(e),
-        codeSent: (String vid, int? resendToken) => onCodeSent(vid),
-        codeAutoRetrievalTimeout: (String vid) {},
-      );
-    } catch (e) {
-      LoggerService.error('Phone verification start failed', e);
-      onVerificationFailed(AuthException('Failed to start phone verification'));
-    }
-  }
-
-  @override
-  Future<UserCredential> signInWithCredential(AuthCredential credential) async {
-    try {
-      return await _auth.signInWithCredential(credential);
-    } catch (e) {
-      LoggerService.error('SignIn failed', e);
-      throw AuthException('Failed to sign in');
-    }
+  Future<void> signInWithPhoneAndPin(String phoneNumber, String pin) async {
+    // Firebase doesn't supported PIN login out of the box in this way
+    throw UnimplementedError('Firebase PIN login not implemented');
   }
 
   @override

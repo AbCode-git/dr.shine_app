@@ -1,5 +1,6 @@
 class UserModel {
   final String id;
+  final String? tenantId; // To support multi-tenancy
   final String phoneNumber;
   final String? displayName;
   final String role; // 'customer' or 'admin'
@@ -10,6 +11,7 @@ class UserModel {
 
   UserModel({
     required this.id,
+    this.tenantId,
     required this.phoneNumber,
     this.displayName,
     required this.role,
@@ -22,6 +24,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'tenant_id': tenantId,
       'phoneNumber': phoneNumber,
       'displayName': displayName,
       'role': role,
@@ -35,6 +38,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
+      tenantId: map['tenant_id'],
       phoneNumber: map['phoneNumber'] ?? '',
       displayName: map['displayName'],
       role: map['role'] ?? 'customer',
@@ -53,9 +57,11 @@ class UserModel {
     bool? isOnDuty,
     int? loyaltyPoints,
     String? pin,
+    String? tenantId,
   }) {
     return UserModel(
       id: id,
+      tenantId: tenantId ?? this.tenantId,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       displayName: displayName ?? this.displayName,
       role: role,

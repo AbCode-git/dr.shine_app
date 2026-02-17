@@ -164,6 +164,11 @@ class SuperAdminDashboardScreen extends StatelessWidget {
           icon: Icons.terminal_rounded,
           items: [
             {
+              'label': 'Branch Management',
+              'val': 'Multi-Branch Governance',
+              'icon': Icons.account_tree_rounded
+            },
+            {
               'label': 'Rate Config',
               'val': 'Update Service Pricing',
               'icon': Icons.price_change_rounded
@@ -243,6 +248,8 @@ class SuperAdminDashboardScreen extends StatelessWidget {
       Navigator.pushNamed(context, AppRoutes.servicePricing);
     } else if (itemValue == 'Edit Admin Settings') {
       Navigator.pushNamed(context, AppRoutes.appConfig);
+    } else if (itemValue == 'Multi-Branch Governance') {
+      Navigator.pushNamed(context, AppRoutes.branchManagement);
     }
   }
 

@@ -62,14 +62,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
               isLoading: authProvider.isLoading,
               onPressed: _handlePinLogin,
             ),
-            const SizedBox(height: AppSizes.p16),
-            TextButton(
-              onPressed: () {
-                // Future: Force OTP login if PIN forgotten
-                Navigator.pushReplacementNamed(context, '/auth');
-              },
-              child: const Text('Login with Phone (OTP)'),
-            ),
           ],
         ),
       ),
@@ -77,16 +69,15 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   }
 
   Future<void> _handlePinLogin() async {
-    final success = await context.read<AuthProvider>().verifyWithPin(
-      widget.phoneNumber, 
-      _pinController.text,
-    );
-
-    if (success) {
+    try {
+      await context.read<AuthProvider>().loginWithPhoneAndPin(
+            widget.phoneNumber,
+            _pinController.text,
+          );
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/');
       }
-    } else {
+    } catch (e) {
       setState(() => _error = true);
     }
   }

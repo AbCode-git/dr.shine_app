@@ -1,12 +1,8 @@
-enum InventoryCategory {
-  carWash,
-  oilChange,
-  tools,
-  other
-}
+enum InventoryCategory { carWash, oilChange, tools, other }
 
 class InventoryItem {
   final String id;
+  final String? tenantId; // Multi-tenancy support
   final String name;
   final InventoryCategory category;
   final double currentStock;
@@ -22,6 +18,7 @@ class InventoryItem {
 
   InventoryItem({
     required this.id,
+    this.tenantId,
     required this.name,
     required this.category,
     required this.currentStock,
@@ -38,6 +35,7 @@ class InventoryItem {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'tenant_id': tenantId,
       'name': name,
       'category': category.name,
       'currentStock': currentStock,
@@ -55,6 +53,7 @@ class InventoryItem {
   factory InventoryItem.fromMap(Map<String, dynamic> map) {
     return InventoryItem(
       id: map['id'] ?? '',
+      tenantId: map['tenant_id'],
       name: map['name'] ?? '',
       category: InventoryCategory.values.firstWhere(
         (e) => e.name == map['category'],
@@ -65,7 +64,9 @@ class InventoryItem {
       reorderLevel: (map['reorderLevel'] as num).toDouble(),
       unit: map['unit'] ?? 'units',
       costPerUnit: (map['costPerUnit'] as num).toDouble(),
-      lastRestocked: map['lastRestocked'] != null ? DateTime.parse(map['lastRestocked']) : null,
+      lastRestocked: map['lastRestocked'] != null
+          ? DateTime.parse(map['lastRestocked'])
+          : null,
       supplier: map['supplier'],
       viscosityGrade: map['viscosityGrade'],
       brand: map['brand'],
@@ -79,9 +80,11 @@ class InventoryItem {
     double? currentStock,
     DateTime? lastRestocked,
     double? costPerUnit,
+    String? tenantId,
   }) {
     return InventoryItem(
       id: id,
+      tenantId: tenantId ?? this.tenantId,
       name: name,
       category: category,
       currentStock: currentStock ?? this.currentStock,

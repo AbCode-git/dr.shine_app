@@ -8,10 +8,30 @@ class FeedbackListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mockFeedback = [
-      {'user': 'Abebe B.', 'rating': 5, 'comment': 'Excellent service, the shine sweep effect is amazing!', 'date': 'Today'},
-      {'user': 'Sara T.', 'rating': 4, 'comment': 'Great wash but took a bit longer than expected.', 'date': 'Yesterday'},
-      {'user': 'Dawit K.', 'rating': 5, 'comment': 'Best car wash in Addis, hands down.', 'date': '2 days ago'},
-      {'user': 'Mina L.', 'rating': 3, 'comment': 'Good wash but the staff were a bit busy.', 'date': 'Jan 25'},
+      {
+        'user': 'Abebe B.',
+        'rating': 5,
+        'comment': 'Excellent service, the shine sweep effect is amazing!',
+        'date': 'Today'
+      },
+      {
+        'user': 'Sara T.',
+        'rating': 4,
+        'comment': 'Great wash but took a bit longer than expected.',
+        'date': 'Yesterday'
+      },
+      {
+        'user': 'Dawit K.',
+        'rating': 5,
+        'comment': 'Best car wash in Addis, hands down.',
+        'date': '2 days ago'
+      },
+      {
+        'user': 'Mina L.',
+        'rating': 3,
+        'comment': 'Good wash but the staff were a bit busy.',
+        'date': 'Jan 25'
+      },
     ];
 
     return Scaffold(
@@ -31,8 +51,11 @@ class FeedbackListScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(fb['user'] as String, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(fb['date'] as String, style: const TextStyle(fontSize: 12, color: Colors.white24)),
+                      Text(fb['user'] as String,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(fb['date'] as String,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.white24)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -41,7 +64,9 @@ class FeedbackListScreen extends StatelessWidget {
                       return Icon(
                         Icons.star,
                         size: 16,
-                        color: i < (fb['rating'] as int) ? Colors.orange : Colors.white12,
+                        color: i < (fb['rating'] as int)
+                            ? Colors.orange
+                            : Colors.white12,
                       );
                     }),
                   ),
@@ -53,7 +78,8 @@ class FeedbackListScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Divider(color: Colors.white10),
                   TextButton.icon(
-                    onPressed: () => _showReplyDialog(context, fb['user'] as String),
+                    onPressed: () =>
+                        _showReplyDialog(context, fb['user'] as String),
                     icon: const Icon(Icons.reply, size: 16),
                     label: const Text('REPLY TO CUSTOMER'),
                     style: TextButton.styleFrom(
@@ -74,6 +100,7 @@ class FeedbackListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: Text('Reply to $userName'),
         content: const TextField(
           decoration: InputDecoration(
@@ -83,7 +110,9 @@ class FeedbackListScreen extends StatelessWidget {
           maxLines: 3,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCEL')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);

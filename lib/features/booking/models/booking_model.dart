@@ -1,5 +1,6 @@
 class BookingModel {
   final String id;
+  final String? tenantId; // Multi-tenancy support
   final String userId;
   final String vehicleId;
   final String serviceId;
@@ -21,6 +22,7 @@ class BookingModel {
 
   BookingModel({
     required this.id,
+    this.tenantId,
     required this.userId,
     required this.vehicleId,
     required this.serviceId,
@@ -41,6 +43,7 @@ class BookingModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'tenant_id': tenantId,
       'userId': userId,
       'vehicleId': vehicleId,
       'serviceId': serviceId,
@@ -62,6 +65,7 @@ class BookingModel {
   factory BookingModel.fromMap(Map<String, dynamic> map) {
     return BookingModel(
       id: map['id'] ?? '',
+      tenantId: map['tenant_id'],
       userId: map['userId'] ?? '',
       vehicleId: map['vehicleId'] ?? '',
       serviceId: map['serviceId'] ?? '',
@@ -86,6 +90,7 @@ class BookingModel {
   // Helper method to create a copy with updated fields
   BookingModel copyWith({
     String? id,
+    String? tenantId,
     String? userId,
     String? vehicleId,
     String? serviceId,
@@ -104,6 +109,7 @@ class BookingModel {
   }) {
     return BookingModel(
       id: id ?? this.id,
+      tenantId: tenantId ?? this.tenantId,
       userId: userId ?? this.userId,
       vehicleId: vehicleId ?? this.vehicleId,
       serviceId: serviceId ?? this.serviceId,

@@ -1,36 +1,34 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dr_shine_app/features/auth/models/user_model.dart';
 import 'package:dr_shine_app/features/auth/repositories/auth_repository.dart';
 import 'package:dr_shine_app/core/utils/mock_data.dart';
 
 class MockAuthRepository implements IAuthRepository {
-  final _authStateController = StreamController<User?>.broadcast();
+  final _authStateController = StreamController<String?>.broadcast();
   UserModel? _mockUser;
 
   @override
-  Stream<User?> get authStateChanges => _authStateController.stream;
+  Stream<String?> get authStateChanges => _authStateController.stream;
 
   @override
-  Future<void> verifyPhone({
-    required String phoneNumber,
-    required Function(String verificationId) onCodeSent,
-    required Function(Exception e) onVerificationFailed,
-  }) async {
-    // Mock bypass for demo numbers
-    if (phoneNumber.endsWith('00') || phoneNumber.endsWith('44')) {
-      await Future.delayed(const Duration(seconds: 1));
-      onCodeSent('mock_verification_id');
+  Future<void> signInWithPhoneAndPin(String phoneNumber, String pin) async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Simple mock validation
+    if (phoneNumber.endsWith('00')) {
+      _mockUser = MockData.superAdminUser;
+    } else if (phoneNumber.endsWith('44')) {
+      _mockUser = MockData.adminUser;
     } else {
-      onVerificationFailed(
-          Exception('Mock verification only supports known demo numbers.'));
+      _mockUser = UserModel(
+        id: 'mock_user_${DateTime.now().millisecondsSinceEpoch}',
+        phoneNumber: phoneNumber,
+        role: 'customer',
+        createdAt: DateTime.now(),
+      );
     }
-  }
 
-  @override
-  Future<UserCredential> signInWithCredential(AuthCredential credential) async {
-    // Return empty mock credential
-    return _FakeUserCredential();
+    _authStateController.add(_mockUser?.id);
   }
 
   @override
@@ -41,10 +39,9 @@ class MockAuthRepository implements IAuthRepository {
 
   @override
   Future<UserModel?> getUserData(String uid) async {
-    // In mock mode, we usually return a hardcoded user based on whitelisting in Provider
-    // or we can simulate firestore fetch here.
     if (uid == 'mock_admin_uid') return MockData.adminUser;
-    return _mockUser;
+    if (_mockUser?.id == uid) return _mockUser;
+    return null;
   }
 
   @override
@@ -58,13 +55,4 @@ class MockAuthRepository implements IAuthRepository {
       _mockUser = _mockUser!.copyWith(pin: pin);
     }
   }
-}
-
-class _FakeUserCredential implements UserCredential {
-  @override
-  final User? user = null;
-  @override
-  final AuthCredential? credential = null;
-  @override
-  final AdditionalUserInfo? additionalUserInfo = null;
 }

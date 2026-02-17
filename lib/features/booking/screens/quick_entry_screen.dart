@@ -5,7 +5,6 @@ import 'package:dr_shine_app/features/booking/models/booking_model.dart';
 import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
 import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
-import 'package:dr_shine_app/shared/models/service_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
@@ -232,7 +231,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                       Expanded(
                         flex: 2,
                         child: DropdownButtonFormField<String>(
-                          value: _selectedBrand,
+                          initialValue: _selectedBrand,
                           decoration: InputDecoration(
                             labelText: 'Brand',
                             prefixIcon: const Icon(Icons.business),
@@ -389,7 +388,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                 title: 'Assign Washer',
                 children: [
                   DropdownButtonFormField<String>(
-                    value: _selectedWasherId,
+                    initialValue: _selectedWasherId,
                     decoration: InputDecoration(
                       labelText: 'Select Staff Member',
                       prefixIcon: const Icon(Icons.badge),

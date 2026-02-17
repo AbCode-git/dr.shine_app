@@ -7,6 +7,7 @@ import 'package:dr_shine_app/features/admin/screens/wash_reports_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/super_admin_dashboard_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/staff_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/service_price_editor.dart';
+import 'package:dr_shine_app/features/admin/screens/branch_management_screen.dart';
 import 'package:dr_shine_app/features/booking/screens/booking_details_screen.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
 import 'package:dr_shine_app/features/auth/screens/pin_setup_screen.dart';
@@ -43,6 +44,7 @@ class AppRoutes {
   static const String loyaltyAnalytics = '/loyalty-analytics';
   static const String quickEntry = '/quick-entry';
   static const String washReports = '/wash-reports';
+  static const String branchManagement = '/branch-management';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -101,6 +103,9 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const QuickEntryScreen());
       case washReports:
         return MaterialPageRoute(builder: (_) => const WashReportsScreen());
+      case branchManagement:
+        return MaterialPageRoute(
+            builder: (_) => const BranchManagementScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

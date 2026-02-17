@@ -87,6 +87,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: const Text('Edit Support Phone'),
         content: TextField(
           controller: controller,
@@ -114,6 +115,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
         title: const Text('Edit Banner Message'),
         content: TextField(
           controller: controller,
@@ -158,7 +160,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
         secondary: Icon(icon, color: AppColors.primary),
         value: value,
         onChanged: onChanged,
-        activeColor: AppColors.primary,
+        activeThumbColor: AppColors.primary,
       ),
     );
   }

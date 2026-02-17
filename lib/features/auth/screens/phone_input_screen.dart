@@ -5,11 +5,9 @@ import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/widgets/primary_button.dart';
-import 'package:dr_shine_app/bootstrap.dart';
 import 'package:dr_shine_app/core/widgets/bubble_animation_widget.dart';
 import 'package:dr_shine_app/features/auth/widgets/shining_car_logo.dart';
 import 'package:dr_shine_app/app/app_routes.dart';
-import 'otp_verification_screen.dart';
 
 class PhoneInputScreen extends StatefulWidget {
   const PhoneInputScreen({super.key});
@@ -254,27 +252,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty) return;
 
-    if (phone.endsWith('00') || phone.endsWith('44')) {
-      Navigator.pushNamed(context, AppRoutes.pinLogin, arguments: phone);
-      return;
-    }
-
-    if (isFirebaseInitialized) {
-      await authProvider.verifyPhone(phone);
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => OtpVerificationScreen(phoneNumber: phone),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Demo: Use Quick Access for mocked accounts')),
-      );
-    }
+    // Direct navigation to PIN login (Skipping OTP per requirements)
+    Navigator.pushNamed(context, AppRoutes.pinLogin, arguments: phone);
   }
 
   void _quickLogin(BuildContext context, String phoneSuffix) {

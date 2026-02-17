@@ -112,7 +112,7 @@ class AdminDashboardScreen extends StatelessWidget {
           ),
           Switch.adaptive(
             value: !isBusy,
-            activeColor: AppColors.success,
+            activeTrackColor: AppColors.success,
             onChanged: (val) => provider
                 .updateStatus(val ? BusyStatus.notBusy : BusyStatus.busy),
           ),

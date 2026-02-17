@@ -87,7 +87,7 @@ class BookingDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 48),
                     Center(
                       child: TextButton.icon(
-                        onPressed: () {},
+                        onPressed: () => _showRatingDialog(context),
                         icon: const Icon(Icons.star_outline),
                         label: const Text('Rate this Service'),
                         style: TextButton.styleFrom(
@@ -158,6 +158,52 @@ class BookingDetailsScreen extends StatelessWidget {
             fontSize: 12,
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
+      ),
+    );
+  }
+
+  void _showRatingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Rate Service',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.star_rounded, size: 48, color: Colors.amber),
+            const SizedBox(height: 16),
+            const Text(
+              'How was your experience?',
+              style: TextStyle(color: Colors.white70),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                  5,
+                  (index) => IconButton(
+                        icon: const Icon(Icons.star_border_rounded,
+                            color: Colors.amber, size: 32),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Thank you for your feedback!'),
+                              backgroundColor: AppColors.success,
+                            ),
+                          );
+                        },
+                      )),
+            ),
+          ],
+        ),
       ),
     );
   }
