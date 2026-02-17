@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:dr_shine_app/features/booking/models/booking_model.dart';
 import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/auth/providers/user_provider.dart';
+import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
 import 'package:dr_shine_app/shared/models/service_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
@@ -44,6 +45,15 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().fetchUsers();
+    });
+  }
+
+  @override
   void dispose() {
     _plateController.dispose();
     _modelController.dispose();
@@ -70,8 +80,9 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
       return;
     }
 
+    final serviceProvider = context.read<ServiceProvider>();
     final service =
-        defaultServices.firstWhere((s) => s.id == _selectedServiceId);
+        serviceProvider.services.firstWhere((s) => s.id == _selectedServiceId);
     final bookingProvider = context.read<BookingProvider>();
 
     final booking = BookingModel(
@@ -128,7 +139,9 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
+    final serviceProvider = context.watch<ServiceProvider>();
     final staffList = userProvider.staff;
+    final services = serviceProvider.services;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -310,7 +323,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: defaultServices.map((service) {
+                    children: services.map((service) {
                       final isSelected = _selectedServiceId == service.id;
                       return InkWell(
                         onTap: () {

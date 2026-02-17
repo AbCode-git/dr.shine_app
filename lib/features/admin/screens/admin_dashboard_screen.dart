@@ -44,6 +44,8 @@ class AdminDashboardScreen extends StatelessWidget {
             // Primary Command CTAs
             _buildActionGrid(context),
             const SizedBox(height: AppSizes.p24),
+            _buildQuickEntryShortcuts(context),
+            const SizedBox(height: AppSizes.p24),
 
             // Operational Alerts
             _buildOperationalAlerts(inventoryProvider),
@@ -115,6 +117,77 @@ class AdminDashboardScreen extends StatelessWidget {
                 .updateStatus(val ? BusyStatus.notBusy : BusyStatus.busy),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildQuickEntryShortcuts(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'QUICK ACTIONS',
+          style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+              color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildShortCutButton(
+                context,
+                'ADD STAFF',
+                Icons.person_add_rounded,
+                AppColors.primary,
+                () => Navigator.pushNamed(context, AppRoutes.staffManagement),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildShortCutButton(
+                context,
+                'NEW ITEM',
+                Icons.add_shopping_cart,
+                AppColors.success,
+                () => Navigator.pushNamed(context, AppRoutes.inventoryForm),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShortCutButton(BuildContext context, String label, IconData icon,
+      Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

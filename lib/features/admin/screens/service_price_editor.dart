@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:dr_shine_app/shared/models/service_model.dart';
+import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 
@@ -11,17 +13,14 @@ class ServicePriceEditor extends StatefulWidget {
 }
 
 class _ServicePriceEditorState extends State<ServicePriceEditor> {
-  late List<ServiceModel> _services;
   final Map<String, bool> _activeStatus = {};
 
   @override
   void initState() {
     super.initState();
-    _services = List.from(defaultServices);
   }
 
-  void _editService(int index) {
-    final service = _services[index];
+  void _editService(int index, ServiceModel service) {
     final nameController = TextEditingController(text: service.name);
     final priceController =
         TextEditingController(text: service.price.toInt().toString());
@@ -51,18 +50,16 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _services[index] = ServiceModel(
-                  id: service.id,
-                  name: nameController.text,
-                  description: service.description,
-                  price: double.tryParse(priceController.text) ?? service.price,
-                );
-                // Update the global list for the session (mock)
-                defaultServices[index] = _services[index];
-              });
-              Navigator.pop(context);
+            onPressed: () async {
+              final serviceProvider = context.read<ServiceProvider>();
+              final updatedService = ServiceModel(
+                id: service.id,
+                name: nameController.text,
+                description: service.description,
+                price: double.tryParse(priceController.text) ?? service.price,
+              );
+              await serviceProvider.updateService(updatedService);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Save'),
           ),
@@ -100,22 +97,20 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (nameController.text.isEmpty || priceController.text.isEmpty) {
                 return;
               }
 
-              setState(() {
-                final newService = ServiceModel(
-                  id: 'service_${DateTime.now().millisecondsSinceEpoch}',
-                  name: nameController.text,
-                  description: 'Custom service added by management',
-                  price: double.tryParse(priceController.text) ?? 0,
-                );
-                _services.add(newService);
-                defaultServices.add(newService);
-              });
-              Navigator.pop(context);
+              final serviceProvider = context.read<ServiceProvider>();
+              final newService = ServiceModel(
+                id: 'service_${DateTime.now().millisecondsSinceEpoch}',
+                name: nameController.text,
+                description: 'Custom service added by management',
+                price: double.tryParse(priceController.text) ?? 0,
+              );
+              await serviceProvider.addService(newService);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Add Service'),
           ),
@@ -126,6 +121,9 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final serviceProvider = context.watch<ServiceProvider>();
+    final services = serviceProvider.services;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Service Pricing')),
       floatingActionButton: FloatingActionButton(
@@ -135,10 +133,10 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(AppSizes.p16),
-        itemCount: _services.length,
+        itemCount: services.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          final service = _services[index];
+          final service = services[index];
           final isActive = _activeStatus[service.id] ?? true;
 
           return Card(
@@ -166,7 +164,7 @@ class _ServicePriceEditorState extends State<ServicePriceEditor> {
                   IconButton(
                     icon:
                         const Icon(Icons.edit, size: 20, color: Colors.white38),
-                    onPressed: () => _editService(index),
+                    onPressed: () => _editService(index, service),
                   ),
                 ],
               ),
