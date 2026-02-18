@@ -122,7 +122,7 @@ class SupabaseAuthRepository implements IAuthRepository {
 
   String _generateVirtualEmail(String phoneNumber) {
     final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
-    return '$cleanPhone@drshine.app';
+    return '$cleanPhone@mekinawash.app';
   }
 
   String _generatePassword(String pin) {

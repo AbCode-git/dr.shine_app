@@ -13,7 +13,7 @@ class LoggerService {
 
     developer.log(
       '[$timestamp] [$label] $message',
-      name: 'DrShine',
+      name: 'MekinaWash',
       error: error,
       stackTrace: stackTrace,
       level: _getDeveloperLevel(level),

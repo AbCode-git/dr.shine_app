@@ -71,7 +71,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                     ),
                     const SizedBox(height: AppSizes.p24),
                     const Text(
-                      'DR. SHINE',
+                      'MEKINA WASH PRO',
                       style: TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.w900,

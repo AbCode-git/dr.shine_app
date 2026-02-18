@@ -34,7 +34,7 @@ class AdminDashboardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Dr. Shine Dashboard'),
+        title: const Text('Mekina Wash Pro Dashboard'),
         centerTitle: true,
         elevation: 0,
         actions: [

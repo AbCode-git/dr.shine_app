@@ -14,7 +14,7 @@ class _AppConfigScreenState extends State<AppConfigScreen> {
   bool _maintenanceMode = false;
   bool _bookingsOpen = true;
   String _supportPhone = '+251911234567';
-  String _bannerMessage = 'Welcome to Dr. Shine! Book your wash now.';
+  String _bannerMessage = 'Welcome to Mekina Wash Pro! Book your wash now.';
 
   @override
   Widget build(BuildContext context) {

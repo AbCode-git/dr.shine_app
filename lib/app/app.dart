@@ -12,8 +12,8 @@ import 'package:dr_shine_app/app/app_routes.dart';
 import 'package:dr_shine_app/app/app_theme.dart';
 import 'package:dr_shine_app/core/services/service_locator.dart';
 
-class DrShineApp extends StatelessWidget {
-  const DrShineApp({super.key});
+class MekinaWashProApp extends StatelessWidget {
+  const MekinaWashProApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class DrShineApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Dr. Shine Car Wash',
+        title: 'Mekina Wash Pro',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
         initialRoute: AppRoutes.home,

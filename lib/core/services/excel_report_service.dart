@@ -119,7 +119,7 @@ class ExcelReportService {
     final fileBytes = excel.save();
     if (fileBytes != null) {
       final String fileName =
-          'DrShine_Report_${periodName}_${DateFormat('yyyyMMdd').format(DateTime.now())}';
+          'MekinaWash_Report_${periodName}_${DateFormat('yyyyMMdd').format(DateTime.now())}';
 
       await FileSaver.instance.saveFile(
         name: fileName,

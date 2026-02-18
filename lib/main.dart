@@ -13,5 +13,5 @@ void main() async {
   debugPrint('main: Bootstrap complete. Running app...');
 
   // Run the app
-  runApp(const DrShineApp());
+  runApp(const MekinaWashProApp());
 }
