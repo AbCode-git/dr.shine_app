@@ -5,12 +5,13 @@ import 'package:dr_shine_app/features/booking/providers/booking_provider.dart';
 import 'package:dr_shine_app/features/admin/providers/service_provider.dart';
 import 'package:dr_shine_app/features/admin/providers/package_provider.dart'; // Added Import
 import 'package:dr_shine_app/shared/models/service_model.dart';
-import 'package:dr_shine_app/features/admin/models/package_model.dart'; // Added Import
+import 'package:dr_shine_app/features/admin/models/package_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:intl/intl.dart';
 
 import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
+import 'package:dr_shine_app/core/services/excel_report_service.dart';
 
 class WashReportsScreen extends StatefulWidget {
   const WashReportsScreen({super.key});
@@ -21,6 +22,7 @@ class WashReportsScreen extends StatefulWidget {
 
 class _WashReportsScreenState extends State<WashReportsScreen> {
   String _selectedPeriod = 'today';
+  List<BookingModel> _currentWashes = [];
 
   DateTime get _startDate {
     final now = DateTime.now();
@@ -66,9 +68,54 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.download_rounded),
-            onPressed: () {
+            onPressed: () async {
+              if (_currentWashes.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('No data to export for this period')),
+                );
+                return;
+              }
+
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Report export started...')),
+                const SnackBar(content: Text('Generating Excel Report...')),
+              );
+
+              final reportRows = _currentWashes.map((wash) {
+                String itemName = 'Unknown';
+                final serviceId = wash.serviceId;
+                final packageId = wash.packageId;
+
+                // We need to access providers here - they are available in build() scope
+                if (serviceId != null) {
+                  try {
+                    final service = serviceProvider.services.firstWhere(
+                      (s) => s.id == serviceId,
+                    );
+                    itemName = service.name;
+                  } catch (_) {}
+                } else if (packageId != null) {
+                  try {
+                    final pkg = packageProvider.packages.firstWhere(
+                      (p) => p.id == packageId,
+                    );
+                    itemName = pkg.name;
+                  } catch (_) {}
+                }
+
+                return ExcelRowData(
+                  time: DateFormat('h:mm a').format(wash.createdAt),
+                  plate: wash.plateNumber ?? 'N/A',
+                  model: '${wash.carBrand ?? ""} ${wash.carModel ?? ""}'.trim(),
+                  service: itemName,
+                  staff: wash.washerStaffName ?? 'N/A',
+                  price: wash.price,
+                );
+              }).toList();
+
+              await ExcelReportService.exportWashReports(
+                reportRows,
+                _selectedPeriod,
               );
             },
           ),
@@ -79,6 +126,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
           stream: bookingProvider.getBookingsByDateRange(_startDate, _endDate),
           builder: (context, snapshot) {
             final washes = snapshot.data ?? [];
+            _currentWashes = washes;
 
             return Column(
               children: [
@@ -125,8 +173,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-            bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+        border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: Row(
         children: [
@@ -157,7 +204,8 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
+              color:
+                  isSelected ? AppColors.textPrimary : AppColors.textSecondary,
             ),
           ),
         ),
@@ -182,7 +230,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
             label: 'Total Revenue',
             value: '${totalRevenue.toStringAsFixed(0)} ETB',
             icon: Icons.payments_rounded,
-            color: Colors.green,
+            color: AppColors.success,
             subtitle: 'Realized Income',
           ),
         ),
@@ -192,7 +240,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
             label: 'Cars Washed',
             value: totalCars.toString(),
             icon: Icons.directions_car_rounded,
-            color: Colors.blue,
+            color: AppColors.primary,
             subtitle: 'Completed Jobs',
           ),
         ),
@@ -212,7 +260,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,10 +276,13 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                    fontSize: 10, color: AppColors.textSecondary),
+              Flexible(
+                child: Text(
+                  subtitle,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontSize: 10, color: AppColors.textSecondary),
+                ),
               ),
             ],
           ),
@@ -239,7 +290,9 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
           Text(
             value,
             style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary),
           ),
           const SizedBox(height: 4),
           Text(
@@ -275,7 +328,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,7 +339,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                 fontSize: 11,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1,
-                color: Colors.white38),
+                color: AppColors.textTertiary),
           ),
           const SizedBox(height: 16),
           if (total == 0)
@@ -294,7 +347,8 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
               padding: EdgeInsets.symmetric(vertical: 20),
               child: Center(
                   child: Text('No completed services yet',
-                      style: TextStyle(color: Colors.white24, fontSize: 12))),
+                      style: TextStyle(
+                          color: AppColors.textTertiary, fontSize: 12))),
             )
           else
             ...serviceData.entries.map((entry) {
@@ -321,9 +375,15 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(name,
+                        Expanded(
+                          child: Text(
+                            name,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
+                                fontSize: 13, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         Text(
                             '${entry.value} (${(percent * 100).toStringAsFixed(0)}%)',
                             style: const TextStyle(
@@ -338,7 +398,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                       child: LinearProgressIndicator(
                         value: percent.toDouble(),
                         minHeight: 6,
-                        backgroundColor: Colors.white.withValues(alpha: 0.05),
+                        backgroundColor: AppColors.surfaceVariant,
                         valueColor: const AlwaysStoppedAnimation<Color>(
                             AppColors.primary),
                       ),
@@ -381,29 +441,29 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
-              color: Colors.white38),
+              color: AppColors.textTertiary),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            border: Border.all(color: AppColors.border),
           ),
           child: sortedStaff.isEmpty
               ? const Padding(
                   padding: EdgeInsets.all(24),
                   child: Center(
                       child: Text('No performance data available',
-                          style:
-                              TextStyle(color: Colors.white24, fontSize: 12))),
+                          style: TextStyle(
+                              color: AppColors.textTertiary, fontSize: 12))),
                 )
               : ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: sortedStaff.length,
-                  separatorBuilder: (_, __) => Divider(
-                      height: 1, color: Colors.white.withValues(alpha: 0.03)),
+                  separatorBuilder: (_, __) =>
+                      const Divider(height: 1, color: AppColors.border),
                   itemBuilder: (context, index) {
                     final staff = sortedStaff[index];
                     return ListTile(
@@ -460,7 +520,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
-              color: Colors.white38),
+              color: AppColors.textTertiary),
         ),
         const SizedBox(height: 12),
         if (washes.isEmpty)
@@ -468,7 +528,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
             padding: const EdgeInsets.all(40),
             alignment: Alignment.center,
             child: const Text('No activity found for this period',
-                style: TextStyle(color: Colors.white24)),
+                style: TextStyle(color: AppColors.textTertiary)),
           )
         else
           ...washes.map((wash) {
@@ -502,7 +562,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.02)),
+                border: Border.all(color: AppColors.border),
               ),
               child: Row(
                 children: [
@@ -525,7 +585,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                       style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w900,
-                          color: Colors.white38),
+                          color: AppColors.textTertiary),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -541,7 +601,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                         Text(
                           '$itemName • By ${wash.washerStaffName ?? "Staff"}',
                           style: const TextStyle(
-                              fontSize: 11, color: Colors.white24),
+                              fontSize: 11, color: AppColors.textTertiary),
                         ),
                       ],
                     ),
@@ -559,7 +619,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                       Text(
                         DateFormat('h:mm a').format(wash.createdAt),
                         style: const TextStyle(
-                            fontSize: 10, color: Colors.white24),
+                            fontSize: 10, color: AppColors.textTertiary),
                       ),
                     ],
                   ),

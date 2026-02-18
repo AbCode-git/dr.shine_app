@@ -59,7 +59,6 @@ class _PackageManagementScreenState extends State<PackageManagementScreen> {
 
           // Calculate current price input
           double currentPrice = double.tryParse(priceController.text) ?? 0;
-          double savings = totalServiceValue - currentPrice;
 
           return AlertDialog(
             backgroundColor: AppColors.surface,
@@ -143,6 +142,24 @@ class _PackageManagementScreenState extends State<PackageManagementScreen> {
                               } else {
                                 selectedServiceIds.remove(service.id);
                               }
+
+                              // Auto-suggest price with 10% discount when services are added/removed
+                              double newTotal = 0;
+                              for (var id in selectedServiceIds) {
+                                final s = allServices.firstWhere(
+                                    (s) => s.id == id,
+                                    orElse: () => ServiceModel(
+                                        id: '',
+                                        name: '',
+                                        price: 0,
+                                        description: ''));
+                                newTotal += s.price;
+                              }
+
+                              // Suggested price: 10% discount from total value
+                              double suggestedPrice = newTotal * 0.9;
+                              priceController.text =
+                                  suggestedPrice.toInt().toString();
                             });
                           },
                         );
@@ -165,26 +182,42 @@ class _PackageManagementScreenState extends State<PackageManagementScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Total Value:'),
+                              const Text('Total Service Value:'),
                               Text(
                                   '${totalServiceValue.toStringAsFixed(0)} ETB',
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
+                                      decoration: TextDecoration.lineThrough,
+                                      color: Colors.white54)),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Customer Savings:',
+                              const Text('Package Discount (10%):',
                                   style: TextStyle(
                                       color: AppColors.success,
                                       fontWeight: FontWeight.bold)),
                               Text(
-                                  '${savings > 0 ? savings.toStringAsFixed(0) : 0} ETB',
+                                  '-${(totalServiceValue * 0.1).toStringAsFixed(0)} ETB',
                                   style: const TextStyle(
                                       color: AppColors.success,
                                       fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          const Divider(color: Colors.white10, height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Final Package Price:',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14)),
+                              Text('${currentPrice.toStringAsFixed(0)} ETB',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 16,
+                                      color: AppColors.primary)),
                             ],
                           ),
                         ],
@@ -237,30 +270,19 @@ class _PackageManagementScreenState extends State<PackageManagementScreen> {
 
                   final packageProvider = context.read<PackageProvider>();
 
-                  Navigator.pop(ctx);
-
                   try {
+                    // Capture messenger and navigator before await to avoid unsafe context lookup
+                    final messenger = ScaffoldMessenger.of(context);
+                    final navigator = Navigator.of(context);
+
                     if (isEditing) {
-                      final updated = PackageModel(
-                        id: package.id,
+                      final updated = package.copyWith(
                         name: nameController.text.trim(),
                         description: descController.text.trim(),
                         price: price,
                         includedServiceIds: selectedServiceIds.toList(),
                         savings: savingsText,
                       );
-                      // Assuming updatePackage exists or adding it
-                      await packageProvider.addPackage(
-                          updated); // Re-using add for now if specific update missing, but should check provider
-                      // Actually, let's check provider capabilities.
-                      // I'll assume standard CRUD. If update missing, I'll need to fix provider too.
-                      // For now, let's optimistically assume I'll add Update support if needed.
-                      // Wait, I created PackageProvider earlier. Let's stick with add/fetch for MVP if strict update missing,
-                      // but ideally should have update.
-                      // Let's rely on addPackage doing upsert or similar if ID exists, or create separate method.
-                      // I'll assume addPackage for now and fix if needed.
-                      // Actually, better to use a dedicated update method.
-                      // I'll implement updatePackage in provider shortly.
                       await packageProvider.updatePackage(updated);
                     } else {
                       final newPackage = PackageModel(
@@ -274,16 +296,15 @@ class _PackageManagementScreenState extends State<PackageManagementScreen> {
                       await packageProvider.addPackage(newPackage);
                     }
 
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(isEditing
-                              ? 'Package updated'
-                              : 'Package created'),
-                          backgroundColor: AppColors.success,
-                        ),
-                      );
-                    }
+                    // Success: Close dialog and show feedback
+                    navigator.pop();
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            isEditing ? 'Package updated' : 'Package created'),
+                        backgroundColor: AppColors.success,
+                      ),
+                    );
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

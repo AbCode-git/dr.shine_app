@@ -45,13 +45,11 @@ class MockBookingRepository implements IBookingRepository {
   }
 
   @override
-  Future<void> updateBookingStatus(String id, String status,
-      {DateTime? completedAt}) async {
+  Future<void> updateBookingStatus(String id, String status) async {
     final index = _bookings.indexWhere((b) => b.id == id);
     if (index != -1) {
       _bookings[index] = _bookings[index].copyWith(
         status: status,
-        completedAt: completedAt,
       );
       _emit();
     }
@@ -59,8 +57,7 @@ class MockBookingRepository implements IBookingRepository {
 
   @override
   Future<void> completeWash(BookingModel booking) async {
-    await updateBookingStatus(booking.id, 'completed',
-        completedAt: DateTime.now());
+    await updateBookingStatus(booking.id, 'completed');
   }
 
   void _emit() => _streamController.add(List.from(_bookings));

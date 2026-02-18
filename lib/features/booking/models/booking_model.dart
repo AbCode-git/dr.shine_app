@@ -19,7 +19,6 @@ class BookingModel {
   final String? plateNumber; // License plate
   final String? washerStaffId; // ID of staff who washed the car
   final String? washerStaffName; // Name of staff for quick display
-  final DateTime? completedAt; // When wash was completed
 
   BookingModel({
     required this.id,
@@ -39,7 +38,6 @@ class BookingModel {
     this.plateNumber,
     this.washerStaffId,
     this.washerStaffName,
-    this.completedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -51,17 +49,16 @@ class BookingModel {
       'serviceId': serviceId,
       'packageId': packageId,
       'status': status,
-      'bookingDate': bookingDate.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
+      'booking_date': bookingDate.toUtc().toIso8601String(),
+      'created_at': createdAt.toUtc().toIso8601String(),
       'price': price,
       'mileage': mileage,
-      'customerPhone': customerPhone,
-      'carBrand': carBrand,
-      'carModel': carModel,
-      'plateNumber': plateNumber,
+      'customer_phone': customerPhone,
+      'car_brand': carBrand,
+      'car_model': carModel,
+      'plate_number': plateNumber,
       'washerStaffId': washerStaffId,
       'washerStaffName': washerStaffName,
-      'completedAt': completedAt?.toIso8601String(),
     };
   }
 
@@ -74,20 +71,17 @@ class BookingModel {
       serviceId: map['serviceId'],
       packageId: map['packageId'],
       status: map['status'] ?? 'pending',
-      bookingDate: DateTime.parse(map['bookingDate']),
-      createdAt: DateTime.parse(map['createdAt']),
+      bookingDate: DateTime.parse(map['booking_date'] ?? map['bookingDate']),
+      createdAt: DateTime.parse(map['created_at'] ?? map['createdAt']),
       price: (map['price'] as num).toDouble(),
       mileage:
           map['mileage'] != null ? (map['mileage'] as num).toDouble() : null,
-      customerPhone: map['customerPhone'],
-      carBrand: map['carBrand'],
-      carModel: map['carModel'],
-      plateNumber: map['plateNumber'],
+      customerPhone: map['customer_phone'] ?? map['customerPhone'],
+      carBrand: map['car_brand'] ?? map['carBrand'],
+      carModel: map['car_model'] ?? map['carModel'],
+      plateNumber: map['plate_number'] ?? map['plateNumber'],
       washerStaffId: map['washerStaffId'],
       washerStaffName: map['washerStaffName'],
-      completedAt: map['completedAt'] != null
-          ? DateTime.parse(map['completedAt'])
-          : null,
     );
   }
 
@@ -110,7 +104,6 @@ class BookingModel {
     String? plateNumber,
     String? washerStaffId,
     String? washerStaffName,
-    DateTime? completedAt,
   }) {
     return BookingModel(
       id: id ?? this.id,
@@ -130,7 +123,6 @@ class BookingModel {
       plateNumber: plateNumber ?? this.plateNumber,
       washerStaffId: washerStaffId ?? this.washerStaffId,
       washerStaffName: washerStaffName ?? this.washerStaffName,
-      completedAt: completedAt ?? this.completedAt,
     );
   }
 }

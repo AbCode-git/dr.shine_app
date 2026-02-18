@@ -21,7 +21,6 @@ import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart
 import 'package:dr_shine_app/features/admin/screens/duty_roster_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/performance_analytics_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/app_config_screen.dart';
-import 'package:dr_shine_app/features/admin/screens/feedback_list_screen.dart';
 import 'package:dr_shine_app/features/admin/screens/loyalty_analytics_screen.dart';
 import 'package:dr_shine_app/features/auth/screens/register_screen.dart';
 
@@ -43,7 +42,6 @@ class AppRoutes {
   static const String dutyRoster = '/duty-roster';
   static const String performanceAnalytics = '/performance-analytics';
   static const String appConfig = '/app-config';
-  static const String feedbackList = '/feedback-list';
   static const String loyaltyAnalytics = '/loyalty-analytics';
   static const String quickEntry = '/quick-entry';
   static const String washReports = '/wash-reports';
@@ -104,8 +102,6 @@ class AppRoutes {
             builder: (_) => const PerformanceAnalyticsScreen());
       case appConfig:
         return MaterialPageRoute(builder: (_) => const AppConfigScreen());
-      case feedbackList:
-        return MaterialPageRoute(builder: (_) => const FeedbackListScreen());
       case loyaltyAnalytics:
         return MaterialPageRoute(
             builder: (_) => const LoyaltyAnalyticsScreen());

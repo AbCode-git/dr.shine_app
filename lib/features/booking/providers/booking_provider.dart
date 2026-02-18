@@ -17,15 +17,34 @@ class BookingProvider extends ChangeNotifier {
 
   void _init() {
     // Listen to today's bookings by default to keep local list updated
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
     _bookingsSubscription =
         _repository.getBookingsByDateRange(startOfDay, endOfDay).listen(
-      (list) {
-        _bookings.clear();
-        _bookings.addAll(list);
+      (incomingList) {
+        // Merge strategy: Keep existing items if they are newer or currently being updated
+        // but generally favor the stream for the source of truth.
+        for (var incoming in incomingList) {
+          final index = _bookings.indexWhere((b) => b.id == incoming.id);
+          if (index != -1) {
+            _bookings[index] = incoming;
+          } else {
+            _bookings.add(incoming);
+          }
+        }
+
+        // Remove items not in the incoming list (except those we just created and are waiting for)
+        _bookings.removeWhere((existing) =>
+                !incomingList.any((incoming) => incoming.id == existing.id) &&
+                existing.status !=
+                    'washing' // Don't remove active washes we might have just added
+            );
+
+        // Sort by createdAt descending
+        _bookings.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
         notifyListeners();
       },
       onError: (e) => LoggerService.error('BookingProvider stream error', e),
@@ -37,7 +56,7 @@ class BookingProvider extends ChangeNotifier {
 
   // Stream today's bookings (for admin)
   Stream<List<BookingModel>> getTodayBookings() {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
     return getBookingsByDateRange(startOfDay, endOfDay);
@@ -56,6 +75,10 @@ class BookingProvider extends ChangeNotifier {
 
     try {
       await _repository.createBooking(booking);
+      // Proactively add to local list for immediate feedback
+      if (!_bookings.any((b) => b.id == booking.id)) {
+        _bookings.insert(0, booking);
+      }
       LoggerService.info('Booking created successfully');
     } catch (e) {
       LoggerService.error('Failed to create booking in provider', e);
@@ -70,7 +93,15 @@ class BookingProvider extends ChangeNotifier {
   Future<void> updateBookingStatus(String id, String status) async {
     try {
       await _repository.updateBookingStatus(id, status);
-      // Force a local update notification to ensure UI responsiveness
+
+      // Proactively update local list
+      final index = _bookings.indexWhere((b) => b.id == id);
+      if (index != -1) {
+        _bookings[index] = _bookings[index].copyWith(
+          status: status,
+        );
+      }
+
       notifyListeners();
     } catch (e) {
       LoggerService.error('Status update failed', e);
@@ -82,7 +113,15 @@ class BookingProvider extends ChangeNotifier {
   Future<void> completeWash(BookingModel booking) async {
     try {
       await _repository.completeWash(booking);
-      // Force a local update notification to ensure UI responsiveness
+
+      // Proactively update local list
+      final index = _bookings.indexWhere((b) => b.id == booking.id);
+      if (index != -1) {
+        _bookings[index] = _bookings[index].copyWith(
+          status: 'completed',
+        );
+      }
+
       notifyListeners();
     } catch (e) {
       LoggerService.error('Wash completion failed', e);

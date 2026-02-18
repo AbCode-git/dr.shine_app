@@ -5,6 +5,7 @@ import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
+import 'package:dr_shine_app/features/auth/providers/auth_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class InventoryItemFormScreen extends StatefulWidget {
@@ -158,9 +159,12 @@ class _InventoryItemFormScreenState extends State<InventoryItemFormScreen> {
   void _saveItem() async {
     if (_formKey.currentState!.validate()) {
       final inventoryProvider = context.read<InventoryProvider>();
+      final authProvider = context.read<AuthProvider>();
+      final tenantId = authProvider.currentUser?.tenantId;
 
       final itemData = InventoryItem(
         id: widget.item?.id ?? const Uuid().v4(),
+        tenantId: widget.item?.tenantId ?? tenantId,
         name: _nameController.text,
         category: _category,
         currentStock: double.tryParse(_currentStockController.text) ?? 0,

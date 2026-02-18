@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:dr_shine_app/features/inventory/providers/inventory_provider.dart';
+import 'package:dr_shine_app/features/inventory/models/inventory_item_model.dart';
 import 'package:dr_shine_app/core/constants/app_colors.dart';
 import 'package:dr_shine_app/core/constants/app_sizes.dart';
 import 'package:dr_shine_app/core/widgets/responsive_layout.dart';
@@ -8,6 +11,18 @@ class InventoryAnalyticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inventoryProvider = context.watch<InventoryProvider>();
+    final items = inventoryProvider.items;
+
+    // Calculate real stats
+    double totalValue = 0;
+    for (var item in items) {
+      totalValue += item.currentStock * item.costPerUnit;
+    }
+
+    final lowStockItems = items.where((i) => i.isLowStock).toList();
+    final needsReorderItems = items.where((i) => i.needsReorder).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventory Analytics'),
@@ -18,17 +33,30 @@ class InventoryAnalyticsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildSummaryRow(),
-              const SizedBox(height: AppSizes.p24),
-              _buildChartSection(
-                  'Usage Trends (Mock)', 'Weekly consumption of soap and oil.'),
-              const SizedBox(height: AppSizes.p24),
-              _buildCostAnalysis(),
+              _buildSummaryRow(totalValue, items.length),
               const SizedBox(height: AppSizes.p24),
               _buildAlertBox(
-                  'REORDER SUGGESTIONS',
-                  '3 items are below reorder level. Click to restock.',
-                  Icons.history_edu),
+                'REORDER SUGGESTIONS',
+                needsReorderItems.isEmpty
+                    ? 'All items are above reorder levels.'
+                    : '${needsReorderItems.length} items are below reorder level. Click to manage.',
+                Icons.history_edu,
+                isWarning: needsReorderItems.isNotEmpty,
+              ),
+              if (lowStockItems.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _buildAlertBox(
+                  'CRITICAL LOW STOCK',
+                  '${lowStockItems.length} items are critically low or empty!',
+                  Icons.warning_amber_rounded,
+                  color: Colors.redAccent,
+                  isWarning: true,
+                ),
+              ],
+              const SizedBox(height: AppSizes.p24),
+              _buildCostAnalysis(items),
+              const SizedBox(height: AppSizes.p24),
+              _buildUsageTrends(items),
             ],
           ),
         ),
@@ -36,16 +64,30 @@ class InventoryAnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow() {
+  Widget _buildSummaryRow(double totalValue, int totalItems) {
     return Row(
       children: [
         Expanded(
-            child: _buildValueCard('Total Value', '42.5k', 'ETB',
-                Icons.account_balance_wallet, Colors.greenAccent)),
+          child: _buildValueCard(
+            'Total Value',
+            totalValue > 1000
+                ? '${(totalValue / 1000).toStringAsFixed(1)}k'
+                : totalValue.toStringAsFixed(0),
+            'ETB',
+            Icons.account_balance_wallet,
+            Colors.greenAccent,
+          ),
+        ),
         const SizedBox(width: 16),
         Expanded(
-            child: _buildValueCard('Utilization', '82%', 'Cap.',
-                Icons.trending_up, AppColors.primary)),
+          child: _buildValueCard(
+            'Supplies',
+            totalItems.toString(),
+            'Items',
+            Icons.inventory_2,
+            AppColors.primary,
+          ),
+        ),
       ],
     );
   }
@@ -88,7 +130,7 @@ class InventoryAnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChartSection(String title, String subtitle) {
+  Widget _buildUsageTrends(List<InventoryItem> items) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -99,34 +141,57 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSubtitle(title),
-          const SizedBox(height: 4),
-          Text(subtitle,
-              style: const TextStyle(color: Colors.white24, fontSize: 11)),
-          const SizedBox(height: 24),
-          // Mock Chart Bars
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(7, (i) => _buildBar(i * 15.0 + 30, i == 4)),
-          ),
+          _buildSubtitle('CURRENT STOCK LEVELS'),
+          const SizedBox(height: 16),
+          if (items.isEmpty)
+            const Text('No data to display',
+                style: TextStyle(color: Colors.white24))
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: items.take(10).map((item) {
+                final progress = (item.currentStock / 100).clamp(0.0, 1.0);
+                return Column(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 50 * progress,
+                        decoration: BoxDecoration(
+                          color: _getStockColor(item),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(item.name.substring(0, 1),
+                        style: const TextStyle(fontSize: 8)),
+                  ],
+                );
+              }).toList(),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildBar(double height, bool isHighlighted) {
-    return Container(
-      width: 12,
-      height: height,
-      decoration: BoxDecoration(
-        color: isHighlighted ? AppColors.primary : Colors.white10,
-        borderRadius: BorderRadius.circular(4),
-      ),
-    );
+  Color _getStockColor(InventoryItem item) {
+    if (item.isLowStock) return Colors.redAccent;
+    if (item.needsReorder) return Colors.orangeAccent;
+    return Colors.greenAccent;
   }
 
-  Widget _buildCostAnalysis() {
+  Widget _buildCostAnalysis(List<InventoryItem> items) {
+    final sortedItems = List<InventoryItem>.from(items)
+      ..sort((a, b) => b.costPerUnit.compareTo(a.costPerUnit));
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -137,11 +202,14 @@ class InventoryAnalyticsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSubtitle('COST PER SERVICE (AVG)'),
+          _buildSubtitle('TOP EXPENSIVE ITEMS'),
           const SizedBox(height: 16),
-          _buildCostRow('Full Car Wash', '85 ETB'),
-          _buildCostRow('Oil Change (Standard)', '2,800 ETB'),
-          _buildCostRow('Engine Wash', '45 ETB'),
+          if (sortedItems.isEmpty)
+            const Text('No items found',
+                style: TextStyle(color: Colors.white24))
+          else
+            ...sortedItems.take(5).map((item) => _buildCostRow(
+                item.name, '${item.costPerUnit.toStringAsFixed(0)} ETB')),
         ],
       ),
     );
@@ -165,27 +233,29 @@ class InventoryAnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAlertBox(String title, String msg, IconData icon) {
+  Widget _buildAlertBox(String title, String msg, IconData icon,
+      {bool isWarning = false, Color? color}) {
+    final themeColor = color ?? (isWarning ? Colors.orangeAccent : Colors.blue);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.orangeAccent.withValues(alpha: 0.1),
+        color: themeColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSizes.r24),
-        border: Border.all(color: Colors.orangeAccent.withValues(alpha: 0.2)),
+        border: Border.all(color: themeColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.orangeAccent, size: 24),
+          Icon(icon, color: themeColor, size: 24),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
-                        color: Colors.orangeAccent,
+                        color: themeColor,
                         letterSpacing: 1)),
                 const SizedBox(height: 4),
                 Text(msg,

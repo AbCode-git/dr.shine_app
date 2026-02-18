@@ -9,8 +9,11 @@ class SupabaseBookingRepository implements IBookingRepository {
   @override
   Stream<List<BookingModel>> getBookingsByDateRange(
       DateTime start, DateTime end) {
-    return _client.from('bookings').stream(primaryKey: ['id']).map((data) =>
-        data
+    return _client
+        .from('bookings')
+        .stream(primaryKey: ['id'])
+        .order('createdAt', ascending: false)
+        .map((data) => data
             .map((json) => BookingModel.fromMap(json))
             .where((booking) =>
                 booking.bookingDate
@@ -31,12 +34,10 @@ class SupabaseBookingRepository implements IBookingRepository {
   }
 
   @override
-  Future<void> updateBookingStatus(String id, String status,
-      {DateTime? completedAt}) async {
+  Future<void> updateBookingStatus(String id, String status) async {
     try {
       final updates = {
         'status': status,
-        if (completedAt != null) 'completedAt': completedAt.toIso8601String(),
       };
       await _client.from('bookings').update(updates).eq('id', id);
     } catch (e) {
@@ -48,8 +49,7 @@ class SupabaseBookingRepository implements IBookingRepository {
   @override
   Future<void> completeWash(BookingModel booking) async {
     try {
-      final now = DateTime.now();
-      await updateBookingStatus(booking.id, 'completed', completedAt: now);
+      await updateBookingStatus(booking.id, 'completed');
     } catch (e) {
       LoggerService.error('Supabase CompleteWash failed', e);
       rethrow;

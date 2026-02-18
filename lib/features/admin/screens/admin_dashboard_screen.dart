@@ -53,25 +53,24 @@ class AdminDashboardScreen extends StatelessWidget {
               // Analytics Overview Hub
               if (isAdmin) ...[
                 _buildAnalyticsOverview(bookingProvider),
-                const SizedBox(height: AppSizes.p24),
+                const SizedBox(height: 16),
               ],
-              const SizedBox(height: AppSizes.p24),
 
               // Duty & Team Status
               _buildStaffSummary(bookingProvider),
-              const SizedBox(height: AppSizes.p24),
+              const SizedBox(height: 16),
 
               // Washer Performance Leaderboard
               _buildWasherPerformance(bookingProvider),
-              const SizedBox(height: AppSizes.p24),
+              const SizedBox(height: 16),
 
               // Operational Alerts
               _buildOperationalAlerts(inventoryProvider),
-              const SizedBox(height: AppSizes.p24),
+              const SizedBox(height: 16),
 
               // Primary Command CTAs
               _buildActionGrid(context, isAdmin: isAdmin, isStaff: isStaff),
-              const SizedBox(height: AppSizes.p24),
+              const SizedBox(height: 16),
 
               // Live Wash TrackerSection
               _buildLiveWashTracker(bookingProvider, serviceProvider,
@@ -140,20 +139,20 @@ class AdminDashboardScreen extends StatelessWidget {
   }) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white70, size: 20),
+        Icon(icon, color: AppColors.textSecondary, size: 20),
         const SizedBox(height: 8),
         Text(
           value,
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.textPrimary,
             fontSize: 20,
             fontWeight: FontWeight.w900,
           ),
         ),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white60,
+          style: TextStyle(
+            color: AppColors.textSecondary,
             fontSize: 9,
             fontWeight: FontWeight.w900,
             letterSpacing: 1,
@@ -169,7 +168,7 @@ class AdminDashboardScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +178,7 @@ class AdminDashboardScreen extends StatelessWidget {
             style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
-                color: Colors.white38,
+                color: AppColors.textTertiary,
                 letterSpacing: 1),
           ),
           const SizedBox(height: 8),
@@ -213,7 +212,7 @@ class AdminDashboardScreen extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 2,
-              color: Colors.white38),
+              color: AppColors.textTertiary),
         ),
         const SizedBox(height: 16),
         Container(
@@ -251,7 +250,7 @@ class AdminDashboardScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.05),
+                        color: AppColors.surfaceVariant,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -259,7 +258,7 @@ class AdminDashboardScreen extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w900,
-                            color: Colors.white70),
+                            color: AppColors.textSecondary),
                       ),
                     ),
                   ],
@@ -281,7 +280,7 @@ class AdminDashboardScreen extends StatelessWidget {
     actions.add(_buildActionCard(
       context,
       label: 'Quick Entry',
-      icon: Icons.add_rounded,
+      icon: Icons.bolt_rounded,
       color: AppColors.primary,
       onTap: () => Navigator.pushNamed(context, AppRoutes.quickEntry),
     ));
@@ -291,7 +290,7 @@ class AdminDashboardScreen extends StatelessWidget {
       actions.add(_buildActionCard(
         context,
         label: 'Inventory',
-        icon: Icons.inventory_2_outlined,
+        icon: Icons.layers_rounded,
         color: Colors.orangeAccent,
         onTap: () => Navigator.pushNamed(context, AppRoutes.inventory),
       ));
@@ -301,16 +300,16 @@ class AdminDashboardScreen extends StatelessWidget {
     if (isAdmin) {
       actions.add(_buildActionCard(
         context,
-        label: 'Staff Management',
-        icon: Icons.people_outline_rounded,
+        label: 'Staff',
+        icon: Icons.badge_rounded,
         color: AppColors.info,
         onTap: () => Navigator.pushNamed(context, AppRoutes.staffManagement),
       ));
 
       actions.add(_buildActionCard(
         context,
-        label: 'Wash Reports',
-        icon: Icons.analytics_rounded,
+        label: 'Reports',
+        icon: Icons.bar_chart_rounded,
         color: AppColors.success,
         onTap: () => Navigator.pushNamed(context, AppRoutes.washReports),
       ));
@@ -318,7 +317,7 @@ class AdminDashboardScreen extends StatelessWidget {
       actions.add(_buildActionCard(
         context,
         label: 'Services',
-        icon: Icons.local_offer_rounded,
+        icon: Icons.diamond_rounded,
         color: Colors.blueAccent,
         onTap: () => Navigator.pushNamed(context, AppRoutes.servicePricing),
       ));
@@ -326,7 +325,7 @@ class AdminDashboardScreen extends StatelessWidget {
       actions.add(_buildActionCard(
         context,
         label: 'Packages',
-        icon: Icons.inventory_2_rounded,
+        icon: Icons.card_giftcard_rounded,
         color: Colors.amber,
         onTap: () => Navigator.pushNamed(context, AppRoutes.packagePricing),
       ));
@@ -341,7 +340,7 @@ class AdminDashboardScreen extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 2,
-              color: Colors.white38),
+              color: AppColors.textTertiary),
         ),
         const SizedBox(height: 16),
         // Use a Wrap for dynamic number of items without forced rows
@@ -378,7 +377,7 @@ class AdminDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          border: Border.all(color: AppColors.border),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -398,14 +397,17 @@ class AdminDashboardScreen extends StatelessWidget {
               ),
               child: Icon(icon, color: color, size: 28),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
-              label.toUpperCase(),
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
-                  color: Colors.white),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.3,
+                  color: AppColors.textPrimary),
             ),
           ],
         ),
@@ -470,7 +472,7 @@ class AdminDashboardScreen extends StatelessWidget {
                   fontSize: 11,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 2,
-                  color: Colors.white38),
+                  color: AppColors.textTertiary),
             ),
             Spacer(),
             Icon(Icons.live_tv_rounded, size: 14, color: Colors.redAccent),
@@ -495,7 +497,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text('Standing by for new jobs...',
-                      style: TextStyle(color: Colors.white24)),
+                      style: TextStyle(color: AppColors.textTertiary)),
                 ),
               );
             }
@@ -558,7 +560,7 @@ class AdminDashboardScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
@@ -579,7 +581,7 @@ class AdminDashboardScreen extends StatelessWidget {
                     style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 12,
-                        color: Colors.white38),
+                        color: AppColors.textSecondary),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -595,16 +597,21 @@ class AdminDashboardScreen extends StatelessWidget {
                       Text(
                         '$serviceName • Assigned: ${wash.washerStaffName ?? "General"}',
                         style: const TextStyle(
-                            color: Colors.white38, fontSize: 12),
+                            color: AppColors.textTertiary, fontSize: 12),
                       ),
                     ],
                   ),
                 ),
-                _buildStatusBadge(wash.status, statusColor),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _buildStatusBadge(wash.status, statusColor),
+                  ],
+                ),
               ],
             ),
           ),
-          Divider(height: 1, color: Colors.white.withValues(alpha: 0.03)),
+          const Divider(height: 1, color: AppColors.border),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: _buildWashActions(context, wash, bookingProvider),
@@ -759,7 +766,7 @@ class AdminDashboardScreen extends StatelessWidget {
       case 'pending':
         return AppColors.warning;
       default:
-        return Colors.white24;
+        return AppColors.textTertiary;
     }
   }
 }

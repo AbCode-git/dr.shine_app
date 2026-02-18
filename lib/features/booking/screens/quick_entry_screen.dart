@@ -135,8 +135,8 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
       serviceId: _selectedServiceId,
       packageId: _selectedPackageId,
       status: 'washing',
-      bookingDate: DateTime.now(),
-      createdAt: DateTime.now(),
+      bookingDate: DateTime.now().toUtc(),
+      createdAt: DateTime.now().toUtc(),
       price: price,
       customerPhone: _phoneController.text.trim(),
       carBrand: _selectedBrand,
@@ -223,7 +223,7 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                 phoneNumber: phoneController.text,
                 displayName: nameController.text,
                 role: 'washer',
-                createdAt: DateTime.now(),
+                createdAt: DateTime.now().toUtc(),
               );
 
               try {
@@ -827,106 +827,6 @@ class _QuickEntryScreenState extends State<QuickEntryScreen> {
                   ],
                 ),
                 const SizedBox(height: AppSizes.p20),
-
-                // Upsell Logic
-                Consumer2<ServiceProvider, PackageProvider>(
-                  builder: (context, serviceProvider, packageProvider, _) {
-                    if (_selectedServiceId == null || _isPackageTab) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final selectedService = serviceProvider.services.firstWhere(
-                        (s) => s.id == _selectedServiceId,
-                        orElse: () => ServiceModel(
-                            id: '', name: '', price: 0, description: ''));
-
-                    if (selectedService.id.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-
-                    // Find a package that includes this service
-                    try {
-                      final upgradePackage = packageProvider.packages.firstWhere(
-                          (p) =>
-                              p.includedServiceIds
-                                  .contains(selectedService.id) &&
-                              p.price >
-                                  selectedService
-                                      .price // Ensure it's an upgrade in price
-                          );
-
-                      final priceDiff =
-                          upgradePackage.price - selectedService.price;
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.amber.shade700,
-                              Colors.amber.shade900
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.amber.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.auto_awesome, color: Colors.white),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('UPGRADE AVAILABLE',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                          letterSpacing: 1)),
-                                  Text('Get ${upgradePackage.name}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 14)),
-                                  Text(
-                                      'Adds more services for just +${priceDiff.toStringAsFixed(0)} ETB!',
-                                      style: const TextStyle(
-                                          color: Colors.white70, fontSize: 11)),
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isPackageTab = true;
-                                  _selectedPackageId = upgradePackage.id;
-                                  _selectedServiceId = null;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.amber.shade900,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                              ),
-                              child: const Text('UPGRADE'),
-                            ),
-                          ],
-                        ),
-                      );
-                    } catch (e) {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
 
                 // Washer Assignment Card
                 _buildSectionCard(

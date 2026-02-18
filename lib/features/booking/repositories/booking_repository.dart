@@ -4,7 +4,6 @@ abstract class IBookingRepository {
   Stream<List<BookingModel>> getBookingsByDateRange(
       DateTime start, DateTime end);
   Future<void> createBooking(BookingModel booking);
-  Future<void> updateBookingStatus(String id, String status,
-      {DateTime? completedAt});
+  Future<void> updateBookingStatus(String id, String status);
   Future<void> completeWash(BookingModel booking);
 }

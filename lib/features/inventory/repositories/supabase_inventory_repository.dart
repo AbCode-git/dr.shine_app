@@ -17,7 +17,7 @@ class SupabaseInventoryRepository implements IInventoryRepository {
     try {
       await _client
           .from('inventory')
-          .update({'currentStock': newQuantity}).eq('id', itemId);
+          .update({'current_stock': newQuantity}).eq('id', itemId);
     } catch (e) {
       LoggerService.error('Supabase updateStock failed', e);
       rethrow;

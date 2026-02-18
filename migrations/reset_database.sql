@@ -216,7 +216,7 @@ CREATE TRIGGER status_set_tenant BEFORE INSERT ON status
 
 -- Uncomment to create a default tenant for testing
 -- INSERT INTO tenants (id, name) VALUES 
---   ('00000000-0000-0000-0000-000000000001', 'Main Branch - Bole');
+--   ('00000000-0000-0000-0000-000000000001', 'Main Branch - Ayat');
 
 -- ============================================
 -- VERIFICATION QUERIES

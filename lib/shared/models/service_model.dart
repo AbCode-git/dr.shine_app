@@ -22,7 +22,8 @@ class ServiceModel {
       description: map['description'] ?? '',
       price: (map['price'] as num).toDouble(),
       icon: map['icon'],
-      inventoryRequirements: Map<String, double>.from(map['inventoryRequirements'] ?? {}),
+      inventoryRequirements:
+          Map<String, double>.from(map['inventory_requirements'] ?? {}),
     );
   }
 
@@ -33,7 +34,7 @@ class ServiceModel {
       'description': description,
       'price': price,
       'icon': icon,
-      'inventoryRequirements': inventoryRequirements,
+      'inventory_requirements': inventoryRequirements,
     };
   }
 }

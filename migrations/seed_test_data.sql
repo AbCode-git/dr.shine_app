@@ -11,7 +11,7 @@
 INSERT INTO tenants (id, name, created_at)
 VALUES (
     '00000000-0000-0000-0000-000000000001',
-    'Main Branch - Bole',
+    'Main Branch - Ayat',
     NOW()
 )
 ON CONFLICT (id) DO UPDATE SET
@@ -29,21 +29,21 @@ SUPER ADMIN:
 - Virtual Email: +251911234567@drshine.app
 - PIN: 1111
 - Role: superadmin
-- Tenant: Main Branch - Bole
+- Tenant: Main Branch - Ayat
 
 MANAGER:
 - Phone: +251922345678
 - Virtual Email: +251922345678@drshine.app
 - PIN: 2222
 - Role: admin
-- Tenant: Main Branch - Bole
+- Tenant: Main Branch - Ayat
 
 STAFF:
 - Phone: +251933456789
 - Virtual Email: +251933456789@drshine.app
 - PIN: 3333
 - Role: staff
-- Tenant: Main Branch - Bole
+- Tenant: Main Branch - Ayat
 */
 
 -- ============================================

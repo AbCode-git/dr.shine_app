@@ -38,14 +38,14 @@ class InventoryItem {
       'tenant_id': tenantId,
       'name': name,
       'category': category.name,
-      'currentStock': currentStock,
-      'minStockLevel': minStockLevel,
-      'reorderLevel': reorderLevel,
+      'current_stock': currentStock,
+      'min_stock_level': minStockLevel,
+      'reorder_level': reorderLevel,
       'unit': unit,
-      'costPerUnit': costPerUnit,
-      'lastRestocked': lastRestocked?.toIso8601String(),
+      'cost_per_unit': costPerUnit,
+      'last_restocked': lastRestocked?.toIso8601String(),
       'supplier': supplier,
-      'viscosityGrade': viscosityGrade,
+      'viscosity_grade': viscosityGrade,
       'brand': brand,
     };
   }
@@ -59,16 +59,16 @@ class InventoryItem {
         (e) => e.name == map['category'],
         orElse: () => InventoryCategory.other,
       ),
-      currentStock: (map['currentStock'] as num).toDouble(),
-      minStockLevel: (map['minStockLevel'] as num).toDouble(),
-      reorderLevel: (map['reorderLevel'] as num).toDouble(),
+      currentStock: (map['current_stock'] as num?)?.toDouble() ?? 0.0,
+      minStockLevel: (map['min_stock_level'] as num?)?.toDouble() ?? 10.0,
+      reorderLevel: (map['reorder_level'] as num?)?.toDouble() ?? 20.0,
       unit: map['unit'] ?? 'units',
-      costPerUnit: (map['costPerUnit'] as num).toDouble(),
-      lastRestocked: map['lastRestocked'] != null
-          ? DateTime.parse(map['lastRestocked'])
+      costPerUnit: (map['cost_per_unit'] as num?)?.toDouble() ?? 0.0,
+      lastRestocked: map['last_restocked'] != null
+          ? DateTime.parse(map['last_restocked'])
           : null,
       supplier: map['supplier'],
-      viscosityGrade: map['viscosityGrade'],
+      viscosityGrade: map['viscosity_grade'],
       brand: map['brand'],
     );
   }

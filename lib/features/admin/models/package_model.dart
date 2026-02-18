@@ -38,15 +38,35 @@ class PackageModel {
     return calculateTotalValue(allServices) - price;
   }
 
+  PackageModel copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? price,
+    List<String>? includedServiceIds,
+    String? savings,
+    bool? isActive,
+  }) {
+    return PackageModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      includedServiceIds: includedServiceIds ?? this.includedServiceIds,
+      savings: savings ?? this.savings,
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'description': description,
       'price': price,
-      'includedServiceIds': includedServiceIds,
+      'included_service_ids': includedServiceIds,
       'savings': savings,
-      'isActive': isActive,
+      'is_active': isActive,
     };
   }
 
@@ -56,9 +76,9 @@ class PackageModel {
       name: map['name'] ?? '',
       description: map['description'] ?? '',
       price: (map['price'] as num).toDouble(),
-      includedServiceIds: List<String>.from(map['includedServiceIds'] ?? []),
+      includedServiceIds: List<String>.from(map['included_service_ids'] ?? []),
       savings: map['savings'] ?? '',
-      isActive: map['isActive'] ?? true,
+      isActive: map['is_active'] ?? true,
     );
   }
 }

@@ -18,12 +18,11 @@ class SupabasePackageRepository implements IPackageRepository {
       final data = await _client
           .from('packages')
           .select()
-          .eq('isActive', true)
+          .eq('is_active', true)
           .order('name', ascending: true);
       return (data as List).map((json) => PackageModel.fromMap(json)).toList();
     } catch (e) {
       LoggerService.error('Supabase GetPackages failed', e);
-      // Return empty list instead of rethrowing to prevent app crash if table is missing
       return [];
     }
   }
@@ -54,7 +53,7 @@ class SupabasePackageRepository implements IPackageRepository {
   @override
   Future<void> deletePackage(String id) async {
     try {
-      await _client.from('packages').update({'isActive': false}).eq('id', id);
+      await _client.from('packages').update({'is_active': false}).eq('id', id);
     } catch (e) {
       LoggerService.error('Supabase DeletePackage failed', e);
       rethrow;
