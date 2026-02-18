@@ -34,10 +34,12 @@ class SupabaseBookingRepository implements IBookingRepository {
   }
 
   @override
-  Future<void> updateBookingStatus(String id, String status) async {
+  Future<void> updateBookingStatus(String id, String status,
+      {String? paymentMethod}) async {
     try {
       final updates = {
         'status': status,
+        if (paymentMethod != null) 'payment_method': paymentMethod,
       };
       await _client.from('bookings').update(updates).eq('id', id);
     } catch (e) {
@@ -47,9 +49,11 @@ class SupabaseBookingRepository implements IBookingRepository {
   }
 
   @override
-  Future<void> completeWash(BookingModel booking) async {
+  Future<void> completeWash(BookingModel booking,
+      {String? paymentMethod}) async {
     try {
-      await updateBookingStatus(booking.id, 'completed');
+      await updateBookingStatus(booking.id, 'completed',
+          paymentMethod: paymentMethod);
     } catch (e) {
       LoggerService.error('Supabase CompleteWash failed', e);
       rethrow;

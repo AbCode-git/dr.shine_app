@@ -109,6 +109,7 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
                   model: '${wash.carBrand ?? ""} ${wash.carModel ?? ""}'.trim(),
                   service: itemName,
                   staff: wash.washerStaffName ?? 'N/A',
+                  paymentMethod: wash.paymentMethod?.toUpperCase() ?? 'N/A',
                   price: wash.price,
                 );
               }).toList();
@@ -150,6 +151,10 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
 
                         // Staff Performance Table
                         _buildStaffPerformanceRow(washes),
+                        const SizedBox(height: AppSizes.p20),
+
+                        // Daily Settlement (Reconciliation)
+                        _buildDailySettlement(washes),
                         const SizedBox(height: AppSizes.p20),
 
                         // Detailed History Section
@@ -409,6 +414,98 @@ class _WashReportsScreenState extends State<WashReportsScreen> {
             }),
         ],
       ),
+    );
+  }
+
+  Widget _buildDailySettlement(List<BookingModel> washes) {
+    // Only count completed/ready washes
+    final completedWashes = washes
+        .where((w) => w.status == 'completed' || w.status == 'ready')
+        .toList();
+
+    double cashTotal = 0;
+    double telebirrTotal = 0;
+    double cbeTotal = 0;
+    double unknownTotal = 0;
+
+    for (var w in completedWashes) {
+      switch (w.paymentMethod?.toLowerCase()) {
+        case 'cash':
+          cashTotal += w.price;
+          break;
+        case 'telebirr':
+          telebirrTotal += w.price;
+          break;
+        case 'cbe':
+          cbeTotal += w.price;
+          break;
+        default:
+          unknownTotal += w.price;
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'DAILY SETTLEMENT (RECONCILIATION)',
+          style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+              color: AppColors.textTertiary),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            children: [
+              _buildSettlementRow('CASH', cashTotal, Colors.greenAccent),
+              const Divider(height: 24, color: AppColors.border),
+              _buildSettlementRow('TELEBIRR', telebirrTotal, Colors.blueAccent),
+              const Divider(height: 24, color: AppColors.border),
+              _buildSettlementRow('CBE', cbeTotal, Colors.orangeAccent),
+              if (unknownTotal > 0) ...[
+                const Divider(height: 24, color: AppColors.border),
+                _buildSettlementRow('UNTRACKED', unknownTotal, Colors.grey),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettlementRow(String label, double amount, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          label,
+          style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: AppColors.textSecondary),
+        ),
+        const Spacer(),
+        Text(
+          '${amount.toStringAsFixed(0)} ETB',
+          style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              color: AppColors.textPrimary),
+        ),
+      ],
     );
   }
 

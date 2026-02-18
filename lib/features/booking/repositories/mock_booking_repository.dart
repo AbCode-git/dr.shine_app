@@ -45,19 +45,23 @@ class MockBookingRepository implements IBookingRepository {
   }
 
   @override
-  Future<void> updateBookingStatus(String id, String status) async {
+  Future<void> updateBookingStatus(String id, String status,
+      {String? paymentMethod}) async {
     final index = _bookings.indexWhere((b) => b.id == id);
     if (index != -1) {
       _bookings[index] = _bookings[index].copyWith(
         status: status,
+        paymentMethod: paymentMethod,
       );
       _emit();
     }
   }
 
   @override
-  Future<void> completeWash(BookingModel booking) async {
-    await updateBookingStatus(booking.id, 'completed');
+  Future<void> completeWash(BookingModel booking,
+      {String? paymentMethod}) async {
+    await updateBookingStatus(booking.id, 'completed',
+        paymentMethod: paymentMethod);
   }
 
   void _emit() => _streamController.add(List.from(_bookings));

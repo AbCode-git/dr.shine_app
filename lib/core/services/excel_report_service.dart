@@ -9,6 +9,7 @@ class ExcelRowData {
   final String model;
   final String service;
   final String staff;
+  final String paymentMethod;
   final double price;
 
   ExcelRowData({
@@ -17,6 +18,7 @@ class ExcelRowData {
     required this.model,
     required this.service,
     required this.staff,
+    required this.paymentMethod,
     required this.price,
   });
 }
@@ -59,6 +61,7 @@ class ExcelReportService {
       'Car Brand/Model',
       'Service/Package',
       'Washer Staff',
+      'Payment',
       'Price (ETB)'
     ];
 
@@ -82,6 +85,7 @@ class ExcelReportService {
         TextCellValue(row.model),
         TextCellValue(row.service),
         TextCellValue(row.staff),
+        TextCellValue(row.paymentMethod),
         DoubleCellValue(row.price),
       ]);
     }
@@ -103,7 +107,7 @@ class ExcelReportService {
 
     // Set Total Value
     final valueCell = sheet.cell(
-        CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: totalRowIndex));
+        CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: totalRowIndex));
     valueCell.value = TextCellValue('${totalRevenue.toStringAsFixed(0)} ETB');
     valueCell.cellStyle = totalValueStyle;
 
@@ -113,7 +117,8 @@ class ExcelReportService {
     sheet.setColumnWidth(2, 25); // Model
     sheet.setColumnWidth(3, 30); // Service
     sheet.setColumnWidth(4, 25); // Staff
-    sheet.setColumnWidth(5, 15); // Price
+    sheet.setColumnWidth(5, 15); // Payment
+    sheet.setColumnWidth(6, 15); // Price
 
     // 7. Save File
     final fileBytes = excel.save();

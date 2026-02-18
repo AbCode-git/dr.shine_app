@@ -715,14 +715,131 @@ class AdminDashboardScreen extends StatelessWidget {
           label: 'FINALIZE & RELEASE',
           icon: Icons.flag_rounded,
           color: AppColors.success,
-          onPressed: () => handleUpdate(
-            provider.completeWash(wash),
-            'Wash session completed and finalized!',
-          ),
+          onPressed: () async {
+            final paymentMethod = await _showPaymentSelection(context);
+            if (paymentMethod != null) {
+              handleUpdate(
+                provider.completeWash(wash, paymentMethod: paymentMethod),
+                'Wash finalized via ${paymentMethod.toUpperCase()}!',
+              );
+            }
+          },
         );
       default:
         return const SizedBox(height: 8);
     }
+  }
+
+  Future<String?> _showPaymentSelection(BuildContext context) async {
+    return showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white12,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'SELECT PAYMENT METHOD',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 2,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildPaymentOption(
+              context,
+              label: 'CASH',
+              method: 'cash',
+              icon: Icons.money_rounded,
+              color: Colors.greenAccent,
+            ),
+            const SizedBox(height: 12),
+            _buildPaymentOption(
+              context,
+              label: 'TELEBIRR',
+              method: 'telebirr',
+              icon: Icons.phone_android_rounded,
+              color: Colors.blueAccent,
+            ),
+            const SizedBox(height: 12),
+            _buildPaymentOption(
+              context,
+              label: 'CBE',
+              method: 'cbe',
+              icon: Icons.account_balance_rounded,
+              color: Colors.orangeAccent,
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentOption(
+    BuildContext context, {
+    required String label,
+    required String method,
+    required IconData icon,
+    required Color color,
+  }) {
+    return InkWell(
+      onTap: () => Navigator.pop(context, method),
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+              ),
+            ),
+            const Spacer(),
+            const Icon(Icons.arrow_forward_ios_rounded,
+                size: 16, color: Colors.white24),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildLargeActionButton({

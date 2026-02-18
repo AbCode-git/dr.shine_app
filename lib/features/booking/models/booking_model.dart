@@ -19,6 +19,7 @@ class BookingModel {
   final String? plateNumber; // License plate
   final String? washerStaffId; // ID of staff who washed the car
   final String? washerStaffName; // Name of staff for quick display
+  final String? paymentMethod; // New: cash, telebirr, cbe
 
   BookingModel({
     required this.id,
@@ -38,6 +39,7 @@ class BookingModel {
     this.plateNumber,
     this.washerStaffId,
     this.washerStaffName,
+    this.paymentMethod,
   });
 
   Map<String, dynamic> toMap() {
@@ -59,6 +61,7 @@ class BookingModel {
       'plate_number': plateNumber,
       'washerStaffId': washerStaffId,
       'washerStaffName': washerStaffName,
+      'payment_method': paymentMethod,
     };
   }
 
@@ -82,6 +85,7 @@ class BookingModel {
       plateNumber: map['plate_number'] ?? map['plateNumber'],
       washerStaffId: map['washerStaffId'],
       washerStaffName: map['washerStaffName'],
+      paymentMethod: map['payment_method'],
     );
   }
 
@@ -104,6 +108,7 @@ class BookingModel {
     String? plateNumber,
     String? washerStaffId,
     String? washerStaffName,
+    String? paymentMethod,
   }) {
     return BookingModel(
       id: id ?? this.id,
@@ -123,6 +128,7 @@ class BookingModel {
       plateNumber: plateNumber ?? this.plateNumber,
       washerStaffId: washerStaffId ?? this.washerStaffId,
       washerStaffName: washerStaffName ?? this.washerStaffName,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }

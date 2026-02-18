@@ -90,15 +90,18 @@ class BookingProvider extends ChangeNotifier {
   }
 
   // Update booking status
-  Future<void> updateBookingStatus(String id, String status) async {
+  Future<void> updateBookingStatus(String id, String status,
+      {String? paymentMethod}) async {
     try {
-      await _repository.updateBookingStatus(id, status);
+      await _repository.updateBookingStatus(id, status,
+          paymentMethod: paymentMethod);
 
       // Proactively update local list
       final index = _bookings.indexWhere((b) => b.id == id);
       if (index != -1) {
         _bookings[index] = _bookings[index].copyWith(
           status: status,
+          paymentMethod: paymentMethod,
         );
       }
 
@@ -110,15 +113,17 @@ class BookingProvider extends ChangeNotifier {
   }
 
   // Complete wash
-  Future<void> completeWash(BookingModel booking) async {
+  Future<void> completeWash(BookingModel booking,
+      {String? paymentMethod}) async {
     try {
-      await _repository.completeWash(booking);
+      await _repository.completeWash(booking, paymentMethod: paymentMethod);
 
       // Proactively update local list
       final index = _bookings.indexWhere((b) => b.id == booking.id);
       if (index != -1) {
         _bookings[index] = _bookings[index].copyWith(
           status: 'completed',
+          paymentMethod: paymentMethod,
         );
       }
 
